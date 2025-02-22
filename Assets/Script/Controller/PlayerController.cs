@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
 
 public class PlayerController : BaseController
 {
@@ -18,9 +18,9 @@ public class PlayerController : BaseController
 
     protected override void HandleAction()
     {
-        float horiaontal = Input.GetAxisRaw("Horizontal");
-        float vertical= Input.GetAxisRaw("Vertical");
-        movementDirection=new Vector3(horiaontal,0, vertical).normalized;
+        //float horiaontal = Input.GetAxisRaw("Horizontal");
+        //float vertical= Input.GetAxisRaw("Vertical");
+        //movementDirection=new Vector3(horiaontal,0, vertical).normalized;
 
         //Vector2 mousePosition = Input.mousePosition;
         //Vector2 worldPos = camera.ScreenToWorldPoint(mousePosition);
@@ -35,7 +35,7 @@ public class PlayerController : BaseController
         //    lookDirection = lookDirection.normalized;
         //}
 
-        isAttacking = Input.GetMouseButton(0);
+        //isAttacking = Input.GetMouseButton(0);
     
     
     }
@@ -44,6 +44,12 @@ public class PlayerController : BaseController
     {
         base.Death();
         //gameManager.GameOver();
+    }
+
+    private void OnMove(InputValue value)
+    {
+        Vector2 v=value.Get<Vector2>();
+        movementDirection = new Vector3(v.x,0,v.y);
     }
 
 }
