@@ -7,7 +7,7 @@ public class BaseController : MonoBehaviour
     protected Rigidbody _rigidbody;
 
     //[SerializeField] private SpriteRenderer CharacterRenderer;
-    [SerializeField] private SkinnedMeshRenderer CharacterRenderer;
+    //[SerializeField] private SkinnedMeshRenderer CharacterRenderer;
     [SerializeField] private Transform weaponPivot;
 
     protected Vector3 movementDirection = Vector2.zero;
@@ -79,7 +79,7 @@ public class BaseController : MonoBehaviour
         }
 
         _rigidbody.velocity = direction;
-       // animationHandler.Move(direction);
+        animationHandler.Move(direction);
     }
 
     private void Rotate(Vector2 direction)
