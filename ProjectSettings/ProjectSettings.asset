@@ -160,6 +160,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.DefaultCompany.UnityBasic_13Team_Project
+    Standalone: com.DefaultCompany.UnityBasic-13Team-Project
   buildNumber:
     Standalone: 0
     VisionOS: 0
@@ -938,7 +939,7 @@ PlayerSettings:
   hmiLogStartupTiming: 0
   hmiCpuConfiguration: 
   apiCompatibilityLevel: 6
-  activeInputHandler: 1
+  activeInputHandler: 2
   windowsGamepadBackendHint: 0
   cloudProjectId: bd1cdecf-7932-4c78-b9f0-281f93bfbdc4
   framebufferDepthMemorylessMode: 0
