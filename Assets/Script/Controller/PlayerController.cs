@@ -1,6 +1,6 @@
+using Palmmedia.ReportGenerator.Core.CodeAnalysis;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.OnScreen;
@@ -15,12 +15,20 @@ public class PlayerController : BaseController
 
     //private GameManager gameManager;
 
-    private EnemyController nearestEnemy;
+    private Transform nearestEnemy;
+
+    private LayerMask enemyLayer;
+
+    private Vector3 overlapSize;
 
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
         camera=Camera.main;
+
+        enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
+        overlapSize = new Vector3(10, 1, 10);
+
     }
 
 
@@ -28,27 +36,8 @@ public class PlayerController : BaseController
     {
 
         FindNearestEnemy();
-        //float horiaontal = Input.GetAxisRaw("Horizontal");
-        //float vertical= Input.GetAxisRaw("Vertical");
-        //movementDirection=new Vector3(horiaontal,0, vertical).normalized;
-
-        //Vector2 mousePosition = Input.mousePosition;
-        //Vector2 worldPos = camera.ScreenToWorldPoint(mousePosition);
-
-
-        //lookDirection = (worldPos - (Vector2)transform.position);
-
-        //if (lookDirection.magnitude < .9f)
-        //{
-        //    lookDirection = Vector2.zero;
-        //}
-        //else
-        //{
-        //    lookDirection = lookDirection.normalized;
-        //}
-
-        //isAttacking = Input.GetMouseButton(0);
-
+     
+       
 
     }
 
@@ -64,31 +53,64 @@ public class PlayerController : BaseController
         movementDirection = lookDirection = new Vector3(v.x,0,v.y);
     }
 
-    private void FindNearestEnemy()
+    private void a()
     {
-        RaycastHit[] hit= Physics.BoxCastAll(transform.position, new Vector3(10, 1, 10).normalized, transform.forward, transform.rotation,
-            10, 1 << LayerMask.NameToLayer("Enemy"));
-        if(hit.Length>0)
+        RaycastHit[] hit = Physics.BoxCastAll(transform.position, overlapSize, transform.forward, transform.rotation,
+    0, enemyLayer);
+        if (hit.Length > 0)
         {
-            Debug.Log(hit.Length);
+            for(int i=0;i<hit.Length;i++)
+            {
+                Debug.Log(i +" : "+Vector3.Distance(transform.position, hit[i].transform.position));
+
+            }
+
+
+            nearestEnemy = hit[0].transform;
+
         }
 
+    }
+
+    private void FindNearestEnemy()
+    {
+        Collider[] hit = Physics.OverlapBox(transform.position, overlapSize, Quaternion.identity, enemyLayer);
+        if(hit.Length > 0 )
+        {
+            for (int i = 0; i < hit.Length; i++)
+            { Vector3 dir = hit[0].transform.position;
+                RaycastHit ray;
+                Physics.Raycast(transform.position, dir - transform.position, out ray);
+                //ray.transform.gameObject.layer
+            }
+            LookNearestEnemy();
+        }
+    }
+
+
+
+    private void LookNearestEnemy()
+    {
+        lookDirection = (nearestEnemy.transform.position - transform.position);
+
+        if (lookDirection.magnitude < .9f)
+        {
+            lookDirection = Vector3.zero;
+        }
+        else
+        {
+            lookDirection = lookDirection.normalized;
+        }
     }
 
     private void OnDrawGizmos()
     {
-        RaycastHit[] hit = Physics.BoxCastAll(transform.position, new Vector3(100, 10, 100).normalized, transform.forward, transform.rotation,
-            10, 1 << LayerMask.NameToLayer("Enemy"));
-        Debug.Log(hit.Length);
-        if (hit.Length > 0)
-        {
-            Gizmos.DrawWireCube(transform.position + transform.forward * hit[0].distance, transform.lossyScale);
-        }
-        else
-        {
-            Gizmos.DrawRay(transform.position, transform.forward * 10);
-        }
+        Gizmos.color = Color.red;
+//        RaycastHit[] hit = Physics.BoxCastAll(transform.position, overlapSize, transform.forward, transform.rotation,
+//0, enemyLayer);
+        //Debug.Log(Vector3.Distance(transform.position,hit.First().transform.position));
+
+        //Gizmos.DrawWireCube(transform.position, overlapSize);
+        Gizmos.DrawWireCube(transform.position, overlapSize);
     }
-
-
 }

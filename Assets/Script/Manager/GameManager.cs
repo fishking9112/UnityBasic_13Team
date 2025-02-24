@@ -29,14 +29,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        if(!isFirstLoading)
-        {
-            StartGame();
-        }
-        else
-        {
-            isFirstLoading = false;
-        }
+       
     }
 
     public void StartGame()
