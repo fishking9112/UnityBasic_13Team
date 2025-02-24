@@ -7,14 +7,14 @@ public class BaseController : MonoBehaviour
     protected Rigidbody _rigidbody;
 
     //[SerializeField] private SpriteRenderer CharacterRenderer;
-    [SerializeField] private SkinnedMeshRenderer CharacterRenderer;
-    [SerializeField] private Transform weaponPivot;
+    //[SerializeField] private SkinnedMeshRenderer CharacterRenderer;
+    //[SerializeField] private Transform weaponPivot;
 
-    protected Vector3 movementDirection = Vector2.zero;
+    protected Vector3 movementDirection = Vector3.zero;
     public Vector3 MovementDirection { get { return movementDirection; } }
 
-    protected Vector2 lookDirection = Vector2.zero;
-    public Vector2 LookDirection { get { return lookDirection; } }
+    protected Vector3 lookDirection = Vector3.zero;
+    public Vector3 LookDirection { get { return lookDirection; } }
 
     private Vector3 knockback = Vector3.zero;
     private float knockbackDuration = 0.0f;
@@ -34,14 +34,14 @@ public class BaseController : MonoBehaviour
         animationHandler = GetComponent<AnimationHandler>();
         statHandler = GetComponent<StatHandler>();
 
-        if (WeaponPrefab != null)
-        {
-            weaponHandler = Instantiate(WeaponPrefab, weaponPivot);
-        }
-        else
-        {
-            weaponHandler = GetComponentInChildren<WeaponHandler>();
-        }
+        //if (WeaponPrefab != null)
+        //{
+        //    weaponHandler = Instantiate(WeaponPrefab, weaponPivot);
+        //}
+        //else
+        //{
+        //    weaponHandler = GetComponentInChildren<WeaponHandler>();
+        //}
     }
 
     protected virtual void Start()
@@ -79,22 +79,18 @@ public class BaseController : MonoBehaviour
         }
 
         _rigidbody.velocity = direction;
-       // animationHandler.Move(direction);
+        animationHandler.Move(direction);
     }
 
-    private void Rotate(Vector2 direction)
+    private void Rotate(Vector3 direction)
     {
-        float rotZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        float rotZ = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
         bool isLeft = Mathf.Abs(rotZ) > 90f;
 
+        _rigidbody.rotation= Quaternion.Euler(0f, rotZ,0f );
+        
 
-        if (weaponPivot != null)
-        {
-            weaponPivot.rotation = Quaternion.Euler(0f, 0f, rotZ);
 
-        }
-
-        weaponHandler?.Rotate(isLeft);
     }
 
     public void Applyknockback(Transform other, float power, float duration)
@@ -125,7 +121,7 @@ public class BaseController : MonoBehaviour
 
     protected virtual void Attack()
     {
-        if (lookDirection != Vector2.zero)
+        if (lookDirection != Vector3.zero)
         {
             weaponHandler?.Attack();
         }
