@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement; 
 
 public class PlayerController : BaseController
 {
@@ -43,6 +44,7 @@ public class PlayerController : BaseController
     public override void Death()
     {
         base.Death();
+
         //gameManager.GameOver();
     }
 
