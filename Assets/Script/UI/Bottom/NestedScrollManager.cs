@@ -12,7 +12,7 @@ public class NestedScrollManager : MonoBehaviour, IBeginDragHandler, IDragHandle
     public Slider tabSlider;
     public RectTransform[] BtnRect, BtnImageRect;
 
-    const int SIZE = 4;
+    const int SIZE = 5;
     float[] pos = new float[SIZE];
     float distance, curPos, targetPos;
     bool isDrag;
@@ -28,7 +28,8 @@ public class NestedScrollManager : MonoBehaviour, IBeginDragHandler, IDragHandle
 
     float SetPos()
     {
-        // 절반거리를 기준으로 가까운 위치를 반환
+        // scrollbar.value를 사용해 현재 스크롤 위치를 확인
+        // value는 0~1 사이의 값으로, 왼쪽 끝이 0, 오른쪽 끝이 1
         for (int i = 0; i < SIZE; i++)
             if (scrollbar.value < pos[i] + distance * 0.5f && scrollbar.value > pos[i] - distance * 0.5f)
             {
@@ -80,10 +81,12 @@ public class NestedScrollManager : MonoBehaviour, IBeginDragHandler, IDragHandle
 
     void Update()
     {
+        // 탭 슬라이더가 스크롤바와 같은 위치를 가지도록 동기화
         tabSlider.value = scrollbar.value;
-
+        
         if (!isDrag)
         {
+            // 드래그가 끝났을 때 목표 위치로 부드럽게 이동
             scrollbar.value = Mathf.Lerp(scrollbar.value, targetPos, 0.1f);
 
             // 목표 버튼은 크기가 커짐
