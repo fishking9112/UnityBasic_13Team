@@ -10,11 +10,11 @@ public class BaseController : MonoBehaviour
     //[SerializeField] private SkinnedMeshRenderer CharacterRenderer;
     //[SerializeField] private Transform weaponPivot;
 
-    protected Vector3 movementDirection = Vector2.zero;
+    protected Vector3 movementDirection = Vector3.zero;
     public Vector3 MovementDirection { get { return movementDirection; } }
 
-    protected Vector2 lookDirection = Vector2.zero;
-    public Vector2 LookDirection { get { return lookDirection; } }
+    protected Vector3 lookDirection = Vector3.zero;
+    public Vector3 LookDirection { get { return lookDirection; } }
 
     private Vector3 knockback = Vector3.zero;
     private float knockbackDuration = 0.0f;
@@ -52,7 +52,7 @@ public class BaseController : MonoBehaviour
     protected virtual void Update()
     {
         HandleAction();
-        Rotate(movementDirection);
+        Rotate(lookDirection);
         HandleAttackDelay();
     }
 
@@ -91,12 +91,6 @@ public class BaseController : MonoBehaviour
         
 
 
-        //if (weaponPivot != null)
-        //{
-        //    weaponPivot.rotation = Quaternion.Euler(0f, 0f, rotZ);
-        //}
-
-        //weaponHandler?.Rotate(isLeft);
     }
 
     public void Applyknockback(Transform other, float power, float duration)
@@ -127,7 +121,7 @@ public class BaseController : MonoBehaviour
 
     protected virtual void Attack()
     {
-        if (lookDirection != Vector2.zero)
+        if (lookDirection != Vector3.zero)
         {
             weaponHandler?.Attack();
         }
