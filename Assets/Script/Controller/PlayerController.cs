@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.OnScreen;
 
 public class PlayerController : BaseController
 {
     private Camera camera;
+
+    [SerializeField]
+    private OnScreenStick stick;
 
     //private GameManager gameManager;
 
@@ -26,7 +30,7 @@ public class PlayerController : BaseController
         //Vector2 worldPos = camera.ScreenToWorldPoint(mousePosition);
         //lookDirection = (worldPos - (Vector2)transform.position);
 
-        //if(lookDirection.magnitude<.9f)
+        //if (lookDirection.magnitude < .9f)
         //{
         //    lookDirection = Vector2.zero;
         //}
@@ -36,8 +40,8 @@ public class PlayerController : BaseController
         //}
 
         //isAttacking = Input.GetMouseButton(0);
-    
-    
+
+
     }
 
     public override void Death()
@@ -51,5 +55,6 @@ public class PlayerController : BaseController
         Vector2 v=value.Get<Vector2>();
         movementDirection = new Vector3(v.x,0,v.y);
     }
+
 
 }
