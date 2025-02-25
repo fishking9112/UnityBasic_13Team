@@ -9,7 +9,7 @@ using UnityEngine.InputSystem.OnScreen;
 
 public class PlayerController : BaseController
 {
-    private Camera camera;
+    private Camera _camera;
     private GameManager gameManager;
 
     [SerializeField]
@@ -23,14 +23,15 @@ public class PlayerController : BaseController
 
     private Vector3 overlapSize;
 
+    private Vector3 preLookDirection;
+
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
-        camera=Camera.main;
+        _camera=Camera.main;
 
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         overlapSize = new Vector3(10, 1, 10);
-
     }
 
 
@@ -38,8 +39,6 @@ public class PlayerController : BaseController
     {
 
         FindNearestEnemy();
-     
-       
 
     }
 
@@ -47,16 +46,16 @@ public class PlayerController : BaseController
     {
         base.Death();
 
-        //gameManager.GameOver();
     }
 
     private void OnMove(InputValue value)
     {
         Vector2 v=value.Get<Vector2>();
-        movementDirection = lookDirection = new Vector3(v.x,0,v.y);
+        movementDirection = lookDirection = new Vector3(v.x, 0, v.y);
+        
     }
 
-    private void a()
+    private void FindNearestEnemyByCast()
     {
         RaycastHit[] hit = Physics.BoxCastAll(transform.position, overlapSize, transform.forward, transform.rotation,
     0, enemyLayer);
@@ -67,10 +66,7 @@ public class PlayerController : BaseController
                 Debug.Log(i +" : "+Vector3.Distance(transform.position, hit[i].transform.position));
 
             }
-
-
             nearestEnemy = hit[0].transform;
-
         }
 
     }
@@ -80,13 +76,26 @@ public class PlayerController : BaseController
         Collider[] hit = Physics.OverlapBox(transform.position, overlapSize, Quaternion.identity, enemyLayer);
         if(hit.Length > 0 )
         {
+            (int, float) min = (0,100f);
+
             for (int i = 0; i < hit.Length; i++)
-            { Vector3 dir = hit[0].transform.position;
+            { 
+                Vector3 dir = hit[i].transform.position;
                 RaycastHit ray;
                 Physics.Raycast(transform.position, dir - transform.position, out ray);
-                //ray.transform.gameObject.layer
+                if (ray.transform.gameObject.layer != 10)
+                    continue;
+                
+                if(min.Item2>ray.distance)
+                {
+                    min.Item1 = i;
+                    min.Item2 = ray.distance;
+                }
+
             }
-            LookNearestEnemy();
+            nearestEnemy = min.Item2 == 0 ? null : hit[min.Item1].transform;
+            if(nearestEnemy!=null)
+                LookNearestEnemy();
         }
     }
 
@@ -94,7 +103,7 @@ public class PlayerController : BaseController
 
     private void LookNearestEnemy()
     {
-        lookDirection = (nearestEnemy.transform.position - transform.position);
+        lookDirection = (nearestEnemy.position - transform.position);
 
         if (lookDirection.magnitude < .9f)
         {
@@ -106,14 +115,5 @@ public class PlayerController : BaseController
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-//        RaycastHit[] hit = Physics.BoxCastAll(transform.position, overlapSize, transform.forward, transform.rotation,
-//0, enemyLayer);
-        //Debug.Log(Vector3.Distance(transform.position,hit.First().transform.position));
 
-        //Gizmos.DrawWireCube(transform.position, overlapSize);
-        Gizmos.DrawWireCube(transform.position, overlapSize);
-    }
 }
