@@ -58,7 +58,9 @@ public class BaseController : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
-        MoveMent(MovementDirection);
+        if(MovementDirection != Vector3.zero)
+            MoveMent(MovementDirection);
+
         if (knockbackDuration > 0.0f)
         {
             knockbackDuration -= Time.fixedDeltaTime;
