@@ -33,7 +33,8 @@ public class PlayerController : BaseController
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         overlapSize = new Vector3(10, 1, 10);
         StartCoroutine(SearchTarget());
-
+        StartCoroutine(LookTarget());
+        StartCoroutine(StartAttack());
     }
 
     public void SearchEnemy()
@@ -42,6 +43,14 @@ public class PlayerController : BaseController
 
     }
 
+    IEnumerator LookTarget()
+    {
+        while(true)
+        {
+            yield return new WaitUntil(() => movementDirection == Vector3.zero);
+            LookNearestEnemy();
+        }
+    }
 
     IEnumerator SearchTarget()
     {
@@ -68,12 +77,9 @@ public class PlayerController : BaseController
     private void OnMove(InputValue value)
     {
         Vector2 v=value.Get<Vector2>();
-        Vector3 v3= new Vector3(v.x, 0, v.y);
+        Vector3 v3 = new Vector3(v.x, 0, v.y);
         movementDirection = v3;
-        if (!isBattle)
-        {
-            lookDirection = v3;
-        }
+        lookDirection = v3;
     }
 
     private void FindNearestEnemyByCast()
@@ -115,15 +121,14 @@ public class PlayerController : BaseController
 
             }
             nearestEnemy = min.Item2 == 0 ? null : hit[min.Item1].transform;
-            if (nearestEnemy != null)
-            {
-                LookNearestEnemy();
-            }
         }
     }
 
     private void LookNearestEnemy()
     {
+        if (nearestEnemy == null)
+            return;
+
         lookDirection = (nearestEnemy.position - transform.position);
 
         if (lookDirection.magnitude < .9f)
@@ -146,9 +151,10 @@ public class PlayerController : BaseController
         while(true)
         {
             yield return new WaitWhile(() => nearestEnemy==null);
+            yield return new WaitUntil(() => movementDirection == Vector3.zero);
+            yield return new WaitForSeconds(1);
             // น฿ป็
             Attack();
-            yield return new WaitForSeconds(1);
         }
     }
 

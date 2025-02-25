@@ -40,7 +40,7 @@ public class BaseController : MonoBehaviour
         //}
         //else
         //{
-        //    weaponHandler = GetComponentInChildren<WeaponHandler>();
+        weaponHandler = GetComponentInChildren<WeaponHandler>();
         //}
     }
 
@@ -119,6 +119,7 @@ public class BaseController : MonoBehaviour
         if (lookDirection != Vector3.zero)
         {
             weaponHandler?.Attack();
+            animationHandler.Attack();
         }
     }
 

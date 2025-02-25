@@ -9,12 +9,10 @@ public class ProjectileController : MonoBehaviour
     private RangeWeaponHandler rangeWeaponHandler;
 
     private float currentDuration;
-    private Vector2 direction;
+    private Vector3 direction;
     private bool isReady;
-    private Transform pivot;
 
-    private Rigidbody2D _rigidbody;
-    private SpriteRenderer spriteRenderer;
+    private Rigidbody _rigidbody;
 
     public bool fxOnDestroy = true;
 
@@ -22,8 +20,7 @@ public class ProjectileController : MonoBehaviour
 
     private void Awake()
     {
-        _rigidbody = GetComponent<Rigidbody2D>();
-        pivot = transform.GetChild(0);
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -52,27 +49,19 @@ public class ProjectileController : MonoBehaviour
     }
 
 
-    public void Init(Vector2 direction,RangeWeaponHandler weaponHandler, ProjectileManager projectileManager)
+    public void Init(Vector3 direction,RangeWeaponHandler weaponHandler, ProjectileManager projectileManager)
     {
         this.projectileManager = projectileManager;
 
         rangeWeaponHandler = weaponHandler;
+        float rotZ = Mathf.Atan2(direction.z, direction.x) * Mathf.Rad2Deg;
 
+        this.transform.rotation = Quaternion.Euler(0f, -rotZ, 90f);
         this.direction = direction;
         currentDuration = 0;
         transform.localScale = Vector3.one * weaponHandler.BulletSize;
-        spriteRenderer.color = weaponHandler.ProjectileColor;
 
-        transform.right = this.direction;
 
-        if(direction.x<0)
-        {
-            pivot.localRotation = Quaternion.Euler(180, 0, 0);
-        }
-        else
-        {
-            pivot.localRotation = Quaternion.Euler(0, 0, 0);
-        }
         isReady = true;
     }
 

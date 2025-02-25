@@ -16,13 +16,12 @@ public class ProjectileManager : MonoBehaviour
         instance = this;
     }
 
-    public void ShootBullet(RangeWeaponHandler rangeWeaponHandler,Vector2 startPosition, Vector2 direction)
+    public void ShootBullet(RangeWeaponHandler rangeWeaponHandler,Vector3 startPosition, Vector3 direction)
     {
         GameObject origin = projectilePrefabs[rangeWeaponHandler.BulletIndex];
-        GameObject obj = Instantiate(origin, startPosition, Quaternion.identity);
+        GameObject obj = Instantiate(origin, startPosition, Quaternion.Euler(0,0,90));
 
         ProjectileController projectileController = obj.GetComponent<ProjectileController>();
-
         projectileController.Init(direction, rangeWeaponHandler,this);
 
     }
