@@ -127,8 +127,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelCollisionLayer:
     serializedVersion: 2
-    m_Bits: 1024
-  fxOnDestroy: 1
+    m_Bits: 2048
+  fxOnDestroy: 0
 --- !u!65 &7142040890269880026
 BoxCollider:
   m_ObjectHideFlags: 0

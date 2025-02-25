@@ -14,7 +14,7 @@ public class ProjectileController : MonoBehaviour
 
     private Rigidbody _rigidbody;
 
-    public bool fxOnDestroy = true;
+    public bool fxOnDestroy = false;
 
     private ProjectileManager projectileManager;
 
@@ -38,13 +38,24 @@ public class ProjectileController : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter(Collider collision)
     {
-       
+        // 寒俊 何婬鳃 版快
+        if (levelCollisionLayer.value == (levelCollisionLayer.value | (1 << collision.gameObject.layer)))
+        {
+            DestroyProjectile(collision.ClosestPoint(transform.position) - direction * 0.2f, fxOnDestroy);
 
-            
+        }
+        // 鸥百(利)俊霸 何婬鳃 版快
+        else if (rangeWeaponHandler.target.value == (rangeWeaponHandler.target.value | (1 << collision.gameObject.layer)))
+        {
+            //ResourceController resourceController = collision.GetComponent<ResourceController>();
+            //if (resourceController != null)
+            {
+                //    resourceController.ChangeHealth(-rangeWeaponHandler.Power);
+            }
             DestroyProjectile(collision.ClosestPoint(transform.position), fxOnDestroy);
-
+        }
 
     }
 
