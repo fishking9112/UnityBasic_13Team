@@ -1561,7 +1561,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d0c58008ca18fe4dbac957297581558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  target: {fileID: 8360921881770728858}
   cameraHeight: 40
 --- !u!1 &2002479097
 GameObject:
@@ -3043,7 +3043,7 @@ GameObject:
   - component: {fileID: 8360921881770728859}
   m_Layer: 9
   m_Name: Rogue
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

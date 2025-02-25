@@ -10,6 +10,11 @@ public class FollowCamera : MonoBehaviour
     [SerializeField]
     private float cameraHeight;
 
+    private void Awake()
+    {
+        GameObject player = GameObject.FindWithTag("Player");
+        target = player.transform;
+    }
 
     void Start()
     {
