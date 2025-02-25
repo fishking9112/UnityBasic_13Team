@@ -56,7 +56,7 @@ public class PlayerController : BaseController
         movementDirection = lookDirection = new Vector3(v.x,0,v.y);
     }
 
-    private void a()
+    private void FindNearestEnemyByCast()
     {
         RaycastHit[] hit = Physics.BoxCastAll(transform.position, overlapSize, transform.forward, transform.rotation,
     0, enemyLayer);
@@ -65,12 +65,8 @@ public class PlayerController : BaseController
             for(int i=0;i<hit.Length;i++)
             {
                 Debug.Log(i +" : "+Vector3.Distance(transform.position, hit[i].transform.position));
-
             }
-
-
             nearestEnemy = hit[0].transform;
-
         }
 
     }
@@ -98,7 +94,8 @@ public class PlayerController : BaseController
 
             }
             nearestEnemy = min.Item2 == 0 ? null : hit[min.Item1].transform;
-            LookNearestEnemy();
+            if(nearestEnemy!=null)
+                LookNearestEnemy();
         }
     }
 

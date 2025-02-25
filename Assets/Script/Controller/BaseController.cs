@@ -72,12 +72,7 @@ public class BaseController : MonoBehaviour
     private void MoveMent(Vector3 direction)
     {
         direction = direction * statHandler.Speed;
-        if (knockbackDuration > 0.0f)
-        {
-            direction *= 0.2f;
-            direction += knockback;
-        }
-
+       
         _rigidbody.velocity = direction;
         animationHandler.Move(direction);
     }
@@ -85,12 +80,8 @@ public class BaseController : MonoBehaviour
     private void Rotate(Vector3 direction)
     {
         float rotZ = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-        bool isLeft = Mathf.Abs(rotZ) > 90f;
 
         _rigidbody.rotation= Quaternion.Euler(0f, rotZ,0f );
-        
-
-
     }
 
     public void Applyknockback(Transform other, float power, float duration)
