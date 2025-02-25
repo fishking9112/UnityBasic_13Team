@@ -18,6 +18,9 @@ namespace BackendData.Base {
 
         protected bool IsChangedData;
 
+        // 상세 로그 출력 여부를 제어하는 정적 속성
+        public static bool EnableDetailedLogs = true;
+
         // 파일 관련 추상 메서드
         public abstract string GetFileName();  // JSON 파일 이름 (예: "UserData", "WeaponInventory" 등)
         protected abstract void InitializeData();  // 초기 데이터 설정
@@ -40,48 +43,61 @@ namespace BackendData.Base {
         }
 
         // JSON 파일로 저장
-        public void SaveToJson() {
-            if (!IsChangedData) return;
-
-            string path = GetJsonPath();
-            if (string.IsNullOrEmpty(path)) return;
-
+        public bool SaveToJson() {
             try {
+                string filePath = GetJsonPath();
+                
+                if (EnableDetailedLogs)
+                    Debug.Log($"JSON 파일 경로: {filePath}");
+                
+                if (!IsChangedData) return true;
+
                 var jsonData = GetJsonData();
                 // Dictionary를 SerializableDict로 변환
                 var serializableData = new SerializableDict<string, object>(jsonData);
                 // 들여쓰기 없이 저장 (true -> false)
                 string jsonString = JsonUtility.ToJson(serializableData);
-                File.WriteAllText(path, jsonString);
+                File.WriteAllText(filePath, jsonString);
                 IsChangedData = false;
-                Debug.Log($"{GetFileName()} 데이터가 저장되었습니다: {path}");
+                
+                if (EnableDetailedLogs)
+                    Debug.Log($"{GetFileName()} 데이터가 저장되었습니다: {filePath}");
+                
+                return true;
             }
             catch (Exception e) {
-                Debug.LogError($"{GetFileName()} 데이터 저장 중 오류 발생: {e.Message}");
+                Debug.LogError($"{GetFileName()} 저장 중 오류: {e.Message}");
+                return false;
             }
         }
 
         // JSON 파일에서 로드
         public bool LoadFromJson() {
-            string path = GetJsonPath();
-            if (string.IsNullOrEmpty(path)) return false;
-
             try {
-                if (!File.Exists(path)) {
-                    Debug.Log($"{GetFileName()} 데이터 파일이 없습니다: {path}");
+                string filePath = GetJsonPath();
+                
+                if (EnableDetailedLogs)
+                    Debug.Log($"JSON 파일 경로: {filePath}");
+                
+                if (!File.Exists(filePath)) {
+                    if (EnableDetailedLogs)
+                        Debug.Log($"{GetFileName()} 데이터 파일이 없습니다: {filePath}");
                     return false;
                 }
 
-                string jsonString = File.ReadAllText(path);
+                string jsonString = File.ReadAllText(filePath);
                 // SerializableDict로 변환 후 Dictionary로 변환
                 var serializableData = JsonUtility.FromJson<SerializableDict<string, object>>(jsonString);
                 var data = serializableData.ToDictionary();
                 LoadFromJson(data);
-                Debug.Log($"{GetFileName()} 데이터를 로드했습니다: {path}");
+                
+                if (EnableDetailedLogs)
+                    Debug.Log($"{GetFileName()} 데이터를 로드했습니다: {filePath}");
+                
                 return true;
             }
             catch (Exception e) {
-                Debug.LogError($"{GetFileName()} 데이터 로드 중 오류 발생: {e.Message}");
+                Debug.LogError($"{GetFileName()} 로드 중 오류: {e.Message}");
                 return false;
             }
         }
@@ -96,7 +112,6 @@ namespace BackendData.Base {
 
             // 경로 생성 및 디버그 로그 추가
             string path = Path.Combine(Application.persistentDataPath, $"{fileName}.json");
-            Debug.Log($"JSON 파일 경로: {path}");
             return path;
         }
 

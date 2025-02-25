@@ -37,13 +37,17 @@ namespace UI {
         void Init() {
             _initializeStep.Clear();
             
-            // 게임 데이터 초기화만 수행
+            // 게임 데이터 초기화 수행
             _initializeStep.Enqueue(() => { 
                 ShowDataName("게임 데이터");
                 InitializeGameData();
             });
-
-            // 차트 데이터 로드 부분 제거
+            
+            // 차트 데이터 로드 추가
+            _initializeStep.Enqueue(() => {
+                ShowDataName("차트 데이터");
+                LoadChartData(NextStep);
+            });
 
             // 로딩 UI 초기화
             _maxLoadingCount = _initializeStep.Count;
@@ -74,66 +78,11 @@ namespace UI {
             }
         }
 
-        // 로컬 JSON에서 차트 정보를 로드하는 함수
-        private void LoadChartInfoLocally(Action<bool, string, string, string> func) {
-            try {
-                string chartDataJson = LoadLocalChartData();
-                if (!string.IsNullOrEmpty(chartDataJson)) {
-                    var chartData = JsonUtility.FromJson<ChartDataList>(chartDataJson);
-                    foreach (var chartInfo in chartData.charts) {
-                        _initializeStep.Enqueue(() => {
-                            ShowDataName(chartInfo.name);
-                            ProcessChartInfoLocally(chartInfo, NextStep);
-                        });
-                        _maxLoadingCount++;
-                    }
-                    loadingSlider.maxValue = _maxLoadingCount;
-                    func.Invoke(true, "", "", "");
-                } else {
-                    func.Invoke(true, "", "", "");
-                }
-            } catch {
-                func.Invoke(true, "", "", "");
-            }
-        }
-
-        // 로컬 JSON 파일에서 차트 정보를 읽어오는 함수
-        private string LoadLocalChartData() {
-            // 로컬 JSON 파일 경로 설정
-            string filePath = "Assets/ChartInfo.json";
-            
-            // 파일 읽기
-            if (File.Exists(filePath)) {
-                return File.ReadAllText(filePath);
-            } else {
-                return null;
-            }
-        }
-
-        // 로컬에서 가져온 차트 정보를 처리하는 함수
-        private void ProcessChartInfoLocally(ChartData chartInfo, Action<bool, string, string, string> func) {
-            // 처리 로직 작성
-            // 예시: chartInfo를 이용한 처리 로직
-            // func.Invoke(true, "", "", ""); // 성공 시 콜백 호출
-        }
-
         // 인게임씬으로 이동가는 함수
         private void InGameStart() {
             loadingText.text = "게임 시작하는 중";
             _initializeStep.Clear();
             SceneManager.LoadScene("Main_scene");
-        }
-
-        // 추가: JSON 데이터 구조 정의
-        [Serializable]
-        public class ChartData {
-            public string name;
-            // 필요한 다른 필드들 추가
-        }
-
-        [Serializable]
-        public class ChartDataList {
-            public List<ChartData> charts;
         }
 
         private void InitializeGameData()
@@ -173,6 +122,40 @@ namespace UI {
             {
                 Debug.LogError($"게임 데이터 초기화 실패: {e.Message}");
                 NextStep(false, "GameData", "InitializeGameData", e.Message);
+            }
+        }
+
+        // 차트 데이터 로드 함수
+        private void LoadChartData(Action<bool, string, string, string> callback)
+        {
+            // ChartManager 생성
+            var chartManagerObj = new GameObject("ChartManager");
+            var chartManagerType = Type.GetType("ChartManager");
+            
+            if (chartManagerType != null)
+            {
+                var chartManager = chartManagerObj.AddComponent(chartManagerType) as MonoBehaviour;
+                DontDestroyOnLoad(chartManagerObj);
+                
+                // 리플렉션으로 메서드 호출
+                var loadMethod = chartManagerType.GetMethod("LoadAllChartData");
+                bool success = (bool)loadMethod.Invoke(chartManager, null);
+                
+                if (success)
+                {
+                    Debug.Log("모든 차트 데이터 로드 완료");
+                    callback(true, "", "", "");
+                }
+                else
+                {
+                    Debug.LogError("차트 데이터 로드 실패");
+                    callback(false, "LoadingSceneManager", "LoadChartData", "차트 데이터 로드 실패");
+                }
+            }
+            else
+            {
+                Debug.LogError("ChartManager 타입을 찾을 수 없습니다");
+                callback(false, "LoadingSceneManager", "LoadChartData", "ChartManager 타입을 찾을 수 없습니다");
             }
         }
     }

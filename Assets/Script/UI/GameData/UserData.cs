@@ -11,17 +11,14 @@ namespace BackendData.GameData {
     //===============================================================
     public partial class UserData {
         public int Level { get; private set; }
-        public float Money { get; private set; }
-        public string LastLoginTime { get; private set; }
-        public float Exp { get; private set; }
         public float MaxExp { get; private set; }
-        public float Jewel { get; private set; }
-        public float DayUsingGold { get; set; }
-        public float WeekUsingGold { get; set; }
-        public float MonthUsingGold { get; set; }
-        public int DayDefeatEnemyCount { get; private set; }
-        public int WeekDefeatEnemyCount { get; private set; }
-        public int MonthDefeatEnemyCount { get; private set; }
+        public float CurrentExp { get; private set; }
+        public float Attack { get; private set; }
+        public float Defense { get; private set; }
+        public float DefenseRate { get; private set; }
+        public float CriticalRate { get; private set; }
+        public float Gold { get; private set; }
+        public string LastLoginTime { get; private set; }
     }
 
     //===============================================================
@@ -31,30 +28,24 @@ namespace BackendData.GameData {
         
         // 데이터가 존재하지 않을 경우, 초기값 설정
         protected override void InitializeData() {
-            // 초기 레벨
+            // 레벨
             Level = 1;
-            // 초기 돈
-            Money = 10000;
             // 최대 경험치
             MaxExp = 100;
+            // 현재 경험치
+            CurrentExp = 0;
+            // 공격력
+            Attack = 150;
+            // 방어력
+            Defense = 100;
+            // 방어율
+            DefenseRate = 0;
+            // 크리티컬율
+            CriticalRate = 0;
+            // 보유 골드
+            Gold = 10000;
             // 마지막 로그인 시간
             LastLoginTime = DateTime.Now.ToString(CultureInfo.InvariantCulture);
-            // 현재 경험치
-            Exp = 0;
-            // 보석
-            Jewel = 0;
-            // 하루 사용한 골드
-            DayUsingGold = 0;
-            // 일주일 사용한 골드
-            WeekUsingGold = 0;
-            // 한 달 사용한 골드
-            MonthUsingGold = 0;
-            // 하루 처치한 적 수
-            DayDefeatEnemyCount = 0;
-            // 일주일 처치한 적 수
-            WeekDefeatEnemyCount = 0;
-            // 한 달 처치한 적 수
-            MonthDefeatEnemyCount = 0;
         }
 
         // 테이블 이름 설정 함수
@@ -64,28 +55,21 @@ namespace BackendData.GameData {
 
         // 적 처치 횟수를 갱신하는 함수
         public void CountDefeatEnemy() {
-            DayDefeatEnemyCount++;
-            WeekDefeatEnemyCount++;
-            MonthDefeatEnemyCount++;
+            // DayDefeatEnemyCount++;
+            // WeekDefeatEnemyCount++;
+            // MonthDefeatEnemyCount++;
             IsChangedData = true;
         }
 
         // 유저의 정보를 변경하는 함수
-        public void UpdateUserData(float money, float exp) {
+        public void UpdateUserData(float gold, float exp) {
             IsChangedData = true;
             
-            Exp += exp;
-            Money += money;
+            CurrentExp += exp;
+            Gold += gold;
 
-            if (money < 0) {
-                float tempMoney = Math.Abs(money);
-                DayUsingGold += tempMoney;
-                WeekUsingGold += tempMoney;
-                MonthUsingGold += tempMoney;
-            }
-
-            if (Exp > MaxExp) {
-                while (Exp > MaxExp) {
+            if (CurrentExp > MaxExp) {
+                while (CurrentExp > MaxExp) {
                     LevelUp();
                 }
             }
@@ -93,29 +77,37 @@ namespace BackendData.GameData {
 
         // 레벨업하는 함수
         private void LevelUp() {
-            //Exp가 MaxExp를 초과했을 경우를 대비하여 빼기
-            Exp -= MaxExp;
+            //CurrentExp가 MaxExp를 초과했을 경우를 대비하여 빼기
+            CurrentExp -= MaxExp;
 
             //기존 경험치에서 1.1배
             MaxExp = (float)Math.Truncate(MaxExp * 1.1);
 
             Level++;
+            
+            // 레벨업 시 스탯 증가
+            Attack += 10;
+            Defense += 5;
+            DefenseRate += 0.5f;
+            CriticalRate += 0.5f;
+        }
+
+        public void UpdateLoginTime(DateTime time) {
+            LastLoginTime = time.ToString(CultureInfo.InvariantCulture);
+            IsChangedData = true;
         }
 
         protected override Dictionary<string, object> GetSaveData() {
             return new Dictionary<string, object> {
                 {"Level", Level},
-                {"Money", Money},
-                {"Exp", Exp},
                 {"MaxExp", MaxExp},
-                {"LastLoginTime", DateTime.Now.ToString(CultureInfo.InvariantCulture)},
-                {"DayUsingGold", DayUsingGold},
-                {"WeekUsingGold", WeekUsingGold},
-                {"MonthUsingGold", MonthUsingGold},
-                {"DayDefeatEnemyCount", DayDefeatEnemyCount},
-                {"WeekDefeatEnemyCount", WeekDefeatEnemyCount},
-                {"MonthDefeatEnemyCount", MonthDefeatEnemyCount},
-                {"Jewel", Jewel}
+                {"CurrentExp", CurrentExp},
+                {"Attack", Attack},
+                {"Defense", Defense},
+                {"DefenseRate", DefenseRate},
+                {"CriticalRate", CriticalRate},
+                {"Gold", Gold},
+                {"LastLoginTime", LastLoginTime}
             };
         }
 
@@ -129,38 +121,30 @@ namespace BackendData.GameData {
         {
             try
             {
-                // TryGetValue를 사용하여 안전하게 데이터 로드
                 if (json.TryGetValue("Level", out object levelObj))
                     Level = Convert.ToInt32(levelObj);
-                if (json.TryGetValue("Money", out object moneyObj))
-                    Money = Convert.ToSingle(moneyObj);
-                if (json.TryGetValue("Exp", out object expObj))
-                    Exp = Convert.ToSingle(expObj);
                 if (json.TryGetValue("MaxExp", out object maxExpObj))
                     MaxExp = Convert.ToSingle(maxExpObj);
-                if (json.TryGetValue("LastLoginTime", out object lastLoginObj))
-                    LastLoginTime = lastLoginObj.ToString();
-                if (json.TryGetValue("DayUsingGold", out object dayGoldObj))
-                    DayUsingGold = Convert.ToSingle(dayGoldObj);
-                if (json.TryGetValue("WeekUsingGold", out object weekGoldObj))
-                    WeekUsingGold = Convert.ToSingle(weekGoldObj);
-                if (json.TryGetValue("MonthUsingGold", out object monthGoldObj))
-                    MonthUsingGold = Convert.ToSingle(monthGoldObj);
-                if (json.TryGetValue("DayDefeatEnemyCount", out object dayEnemyObj))
-                    DayDefeatEnemyCount = Convert.ToInt32(dayEnemyObj);
-                if (json.TryGetValue("WeekDefeatEnemyCount", out object weekEnemyObj))
-                    WeekDefeatEnemyCount = Convert.ToInt32(weekEnemyObj);
-                if (json.TryGetValue("MonthDefeatEnemyCount", out object monthEnemyObj))
-                    MonthDefeatEnemyCount = Convert.ToInt32(monthEnemyObj);
-                if (json.TryGetValue("Jewel", out object jewelObj))
-                    Jewel = Convert.ToSingle(jewelObj);
+                if (json.TryGetValue("CurrentExp", out object currentExpObj))
+                    CurrentExp = Convert.ToSingle(currentExpObj);
+                if (json.TryGetValue("Attack", out object attackObj))
+                    Attack = Convert.ToSingle(attackObj);
+                if (json.TryGetValue("Defense", out object defenseObj))
+                    Defense = Convert.ToSingle(defenseObj);
+                if (json.TryGetValue("DefenseRate", out object defenseRateObj))
+                    DefenseRate = Convert.ToSingle(defenseRateObj);
+                if (json.TryGetValue("CriticalRate", out object criticalRateObj))
+                    CriticalRate = Convert.ToSingle(criticalRateObj);
+                if (json.TryGetValue("Gold", out object goldObj))
+                    Gold = Convert.ToSingle(goldObj);
+                if (json.TryGetValue("LastLoginTime", out object lastLoginTimeObj))
+                    LastLoginTime = Convert.ToString(lastLoginTimeObj);
 
                 IsChangedData = false;
             }
             catch (Exception e)
             {
                 Debug.LogError($"UserData 로드 중 오류: {e.Message}");
-                // 오류 발생 시 초기값으로 설정
                 InitializeData();
             }
         }

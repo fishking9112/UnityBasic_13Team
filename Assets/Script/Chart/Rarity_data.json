@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1001,
+        "name": "활",
+        "capability_value": 150,
+        "Type": 1,
+        "rating": 1
+    },
+    {
+        "id": 2001,
+        "name": "초보조끼",
+        "capability_value": 200,
+        "Type": 2,
+        "rating": 1
+    },
+    {
+        "id": 3001,
+        "name": "동반지",
+        "capability_value": 1,
+        "Type": 3,
+        "rating": 1
+    }
+] 

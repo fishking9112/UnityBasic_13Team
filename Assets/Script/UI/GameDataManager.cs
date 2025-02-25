@@ -69,13 +69,29 @@ public class GameDataManager : MonoBehaviour
             WeaponEquip = new BackendData.GameData.WeaponEquip.Manager();
             QuestAchievement = new BackendData.GameData.QuestAchievement.Manager();
 
+            // 로그 출력 줄이기 - 로드 시 로그 출력 제거
+            bool originalLogState = BackendData.Base.GameData.EnableDetailedLogs;
+            BackendData.Base.GameData.EnableDetailedLogs = false;
+            
             UserData.LoadFromJson();
             WeaponInventory.LoadFromJson();
             WeaponEquip.LoadFromJson();
             QuestAchievement.LoadFromJson();
-
-            SaveAllData();
+            
+            // 로그 상태 복원
+            BackendData.Base.GameData.EnableDetailedLogs = originalLogState;
+            
             Debug.Log("모든 게임 데이터를 로드했습니다.");
+            
+            // 저장 시에도 로그 출력 줄이기
+            originalLogState = BackendData.Base.GameData.EnableDetailedLogs;
+            BackendData.Base.GameData.EnableDetailedLogs = false;
+            
+            SaveAllData();
+            
+            // 로그 상태 복원
+            BackendData.Base.GameData.EnableDetailedLogs = originalLogState;
+            Debug.Log("모든 게임 데이터를 저장했습니다.");
         }
         catch (Exception e)
         {
