@@ -15,7 +15,7 @@ public class PlayerController : BaseController
     [SerializeField]
     private OnScreenStick stick;
 
-    //private GameManager gameManager;
+    
 
     private Transform nearestEnemy;
 
@@ -23,7 +23,7 @@ public class PlayerController : BaseController
 
     private Vector3 overlapSize;
 
-    private Vector3 preLookDirection;
+    public bool isBattle;
 
     public void Init(GameManager gameManager)
     {
@@ -32,13 +32,30 @@ public class PlayerController : BaseController
 
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         overlapSize = new Vector3(10, 1, 10);
+        StartCoroutine(SearchTarget());
+
     }
 
+    public void SearchEnemy()
+    {
+        StartCoroutine(SearchTarget());
+
+    }
+
+
+    IEnumerator SearchTarget()
+    {
+        while(isBattle)
+        {
+            FindNearestEnemy();
+            yield return new WaitUntil(() => nearestEnemy == null);
+        }
+    }
 
     protected override void HandleAction()
     {
 
-        FindNearestEnemy();
+        
 
     }
 
@@ -51,8 +68,12 @@ public class PlayerController : BaseController
     private void OnMove(InputValue value)
     {
         Vector2 v=value.Get<Vector2>();
-        movementDirection = lookDirection = new Vector3(v.x, 0, v.y);
-        
+        Vector3 v3= new Vector3(v.x, 0, v.y);
+        movementDirection = v3;
+        if (!isBattle)
+        {
+            lookDirection = v3;
+        }
     }
 
     private void FindNearestEnemyByCast()
@@ -74,19 +95,19 @@ public class PlayerController : BaseController
     private void FindNearestEnemy()
     {
         Collider[] hit = Physics.OverlapBox(transform.position, overlapSize, Quaternion.identity, enemyLayer);
-        if(hit.Length > 0 )
+        if (hit.Length > 0)
         {
-            (int, float) min = (0,100f);
+            (int, float) min = (0, 100f);
 
             for (int i = 0; i < hit.Length; i++)
-            { 
+            {
                 Vector3 dir = hit[i].transform.position;
                 RaycastHit ray;
                 Physics.Raycast(transform.position, dir - transform.position, out ray);
                 if (ray.transform.gameObject.layer != 10)
                     continue;
-                
-                if(min.Item2>ray.distance)
+
+                if (min.Item2 > ray.distance)
                 {
                     min.Item1 = i;
                     min.Item2 = ray.distance;
@@ -94,12 +115,12 @@ public class PlayerController : BaseController
 
             }
             nearestEnemy = min.Item2 == 0 ? null : hit[min.Item1].transform;
-            if(nearestEnemy!=null)
+            if (nearestEnemy != null)
+            {
                 LookNearestEnemy();
+            }
         }
     }
-
-
 
     private void LookNearestEnemy()
     {
@@ -115,5 +136,20 @@ public class PlayerController : BaseController
         }
     }
 
+    protected override void Attack()
+    {
+        base.Attack();
+    }
+
+    IEnumerator StartAttack()
+    {
+        while(true)
+        {
+            yield return new WaitWhile(() => nearestEnemy==null);
+            // น฿ป็
+            Attack();
+            yield return new WaitForSeconds(1);
+        }
+    }
 
 }
