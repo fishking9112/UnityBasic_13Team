@@ -79,6 +79,10 @@ public class BaseController : MonoBehaviour
 
     private void Rotate(Vector3 direction)
     {
+        // 회전값 0(입력값 없음)이면 바꾸지 않음
+        if (direction == Vector3.zero)
+            return;
+
         float rotZ = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
 
         _rigidbody.rotation= Quaternion.Euler(0f, rotZ,0f );

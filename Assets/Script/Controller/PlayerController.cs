@@ -9,7 +9,7 @@ using UnityEngine.InputSystem.OnScreen;
 
 public class PlayerController : BaseController
 {
-    private Camera camera;
+    private Camera _camera;
     private GameManager gameManager;
 
     [SerializeField]
@@ -28,11 +28,10 @@ public class PlayerController : BaseController
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
-        camera=Camera.main;
+        _camera=Camera.main;
 
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         overlapSize = new Vector3(10, 1, 10);
-
     }
 
 
@@ -41,24 +40,19 @@ public class PlayerController : BaseController
 
         FindNearestEnemy();
 
-
-        Debug.DrawRay(transform.position, lookDirection,new Color (1,0,0));
-
     }
 
     public override void Death()
     {
         base.Death();
 
-        //gameManager.GameOver();
     }
 
     private void OnMove(InputValue value)
     {
         Vector2 v=value.Get<Vector2>();
-        //movementDirection = lookDirection = new Vector3(v.x,0,v.y);
-        movementDirection = preLookDirection = new Vector3(v.x,0,v.y);
-        lookDirection = preLookDirection;
+        movementDirection = lookDirection = new Vector3(v.x, 0, v.y);
+        
     }
 
     private void FindNearestEnemyByCast()
@@ -121,14 +115,5 @@ public class PlayerController : BaseController
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-//        RaycastHit[] hit = Physics.BoxCastAll(transform.position, overlapSize, transform.forward, transform.rotation,
-//0, enemyLayer);
-        //Debug.Log(Vector3.Distance(transform.position,hit.First().transform.position));
 
-        //Gizmos.DrawWireCube(transform.position, overlapSize);
-        Gizmos.DrawWireCube(transform.position, overlapSize);
-    }
 }
