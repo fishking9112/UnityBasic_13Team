@@ -23,6 +23,8 @@ public class PlayerController : BaseController
 
     private Vector3 overlapSize;
 
+    private Vector3 preLookDirection;
+
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
@@ -38,8 +40,9 @@ public class PlayerController : BaseController
     {
 
         FindNearestEnemy();
-     
-       
+
+
+        Debug.DrawRay(transform.position, lookDirection,new Color (1,0,0));
 
     }
 
@@ -53,7 +56,9 @@ public class PlayerController : BaseController
     private void OnMove(InputValue value)
     {
         Vector2 v=value.Get<Vector2>();
-        movementDirection = lookDirection = new Vector3(v.x,0,v.y);
+        //movementDirection = lookDirection = new Vector3(v.x,0,v.y);
+        movementDirection = preLookDirection = new Vector3(v.x,0,v.y);
+        lookDirection = preLookDirection;
     }
 
     private void FindNearestEnemyByCast()
@@ -65,6 +70,7 @@ public class PlayerController : BaseController
             for(int i=0;i<hit.Length;i++)
             {
                 Debug.Log(i +" : "+Vector3.Distance(transform.position, hit[i].transform.position));
+
             }
             nearestEnemy = hit[0].transform;
         }
