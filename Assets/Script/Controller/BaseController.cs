@@ -58,8 +58,7 @@ public class BaseController : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
-        if(MovementDirection != Vector3.zero)
-            MoveMent(MovementDirection);
+        MoveMent(MovementDirection);
 
         if (knockbackDuration > 0.0f)
         {
