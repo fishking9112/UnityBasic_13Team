@@ -80,12 +80,24 @@ public class PlayerController : BaseController
         Collider[] hit = Physics.OverlapBox(transform.position, overlapSize, Quaternion.identity, enemyLayer);
         if(hit.Length > 0 )
         {
+            (int, float) min = (0,100f);
+
             for (int i = 0; i < hit.Length; i++)
-            { Vector3 dir = hit[0].transform.position;
+            { 
+                Vector3 dir = hit[i].transform.position;
                 RaycastHit ray;
                 Physics.Raycast(transform.position, dir - transform.position, out ray);
-                //ray.transform.gameObject.layer
+                if (ray.transform.gameObject.layer != 10)
+                    continue;
+                
+                if(min.Item2>ray.distance)
+                {
+                    min.Item1 = i;
+                    min.Item2 = ray.distance;
+                }
+
             }
+            nearestEnemy = min.Item2 == 0 ? null : hit[min.Item1].transform;
             LookNearestEnemy();
         }
     }
@@ -94,7 +106,7 @@ public class PlayerController : BaseController
 
     private void LookNearestEnemy()
     {
-        lookDirection = (nearestEnemy.transform.position - transform.position);
+        lookDirection = (nearestEnemy.position - transform.position);
 
         if (lookDirection.magnitude < .9f)
         {
