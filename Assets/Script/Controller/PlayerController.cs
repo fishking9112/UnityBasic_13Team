@@ -52,13 +52,6 @@ public class PlayerController : BaseController
         }
     }
 
-    protected override void HandleAction()
-    {
-
-        
-
-    }
-
     public override void Death()
     {
         base.Death();
@@ -73,21 +66,6 @@ public class PlayerController : BaseController
         lookDirection = v3;
     }
 
-    private void FindNearestEnemyByCast()
-    {
-        RaycastHit[] hit = Physics.BoxCastAll(transform.position, overlapSize, transform.forward, transform.rotation,
-    0, enemyLayer);
-        if (hit.Length > 0)
-        {
-            for(int i=0;i<hit.Length;i++)
-            {
-                Debug.Log(i +" : "+Vector3.Distance(transform.position, hit[i].transform.position));
-
-            }
-            nearestEnemy = hit[0].transform;
-        }
-
-    }
 
     private void FindNearestEnemy()
     {
