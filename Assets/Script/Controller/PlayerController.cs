@@ -1,21 +1,11 @@
-using Palmmedia.ReportGenerator.Core.CodeAnalysis;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEngine.SceneManagement; 
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.OnScreen;
 
 public class PlayerController : BaseController
 {
     private Camera _camera;
     private GameManager gameManager;
-
-    [SerializeField]
-    private OnScreenStick stick;
-
-    
 
     private Transform nearestEnemy;
 

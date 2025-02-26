@@ -19,7 +19,10 @@ public class ProjectileManager : MonoBehaviour
     public void ShootBullet(RangeWeaponHandler rangeWeaponHandler,Vector3 startPosition, Vector3 direction)
     {
         GameObject origin = projectilePrefabs[rangeWeaponHandler.BulletIndex];
-        GameObject obj = Instantiate(origin, startPosition, Quaternion.Euler(0,0,90));
+
+        float rotZ = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+
+        GameObject obj = Instantiate(origin, startPosition, Quaternion.Euler(0,rotZ,0));
 
         ProjectileController projectileController = obj.GetComponent<ProjectileController>();
         projectileController.Init(direction, rangeWeaponHandler,this);

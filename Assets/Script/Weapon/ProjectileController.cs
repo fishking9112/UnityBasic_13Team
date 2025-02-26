@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class ProjectileController : MonoBehaviour
 {
+    enum SPECIAL_EFFECT
+    {
+        NORMAL=1,
+        REFRACTION=2,   // 굴절
+        BOOM=4          // 폭발
+    }
+
     [SerializeField] private LayerMask levelCollisionLayer;
 
     private RangeWeaponHandler rangeWeaponHandler;
@@ -18,9 +25,12 @@ public class ProjectileController : MonoBehaviour
 
     private ProjectileManager projectileManager;
 
+    private int sp=1;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+
     }
 
     private void Update()
@@ -37,24 +47,48 @@ public class ProjectileController : MonoBehaviour
         _rigidbody.velocity = direction * rangeWeaponHandler.Speed;
     }
 
-
     private void OnTriggerEnter(Collider collision)
     {
         // 벽에 부딫힐 경우
         if (levelCollisionLayer.value == (levelCollisionLayer.value | (1 << collision.gameObject.layer)))
         {
-            DestroyProjectile(collision.ClosestPoint(transform.position) - direction * 0.2f, fxOnDestroy);
+            // 튕기는 화살일 경우 각도 바꾸기(방향 뿐 아니라 화살 자체 방향도 바꾸어 줘야 함)
+            if(sp==(sp|1<<(int)SPECIAL_EFFECT.REFRACTION))
+            {
+                Vector3 income = direction; 
+
+                RaycastHit ray;
+                Physics.Raycast(transform.position, direction, out ray);
+                Vector3 normal = ray.normal;
+                direction = Vector3.Reflect(income, normal);
+
+                float rotZ = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+
+                transform.rotation = Quaternion.Euler(0,rotZ,0);
+            }
+            else
+            {
+                // 튕기는 화살이 아닐 경우 파괴
+                DestroyProjectile(collision.ClosestPoint(transform.position) - direction * 0.2f, fxOnDestroy);
+            }
+
 
         }
         // 타겟(적)에게 부딫힐 경우
         else if (rangeWeaponHandler.target.value == (rangeWeaponHandler.target.value | (1 << collision.gameObject.layer)))
         {
-            //ResourceController resourceController = collision.GetComponent<ResourceController>();
-            //if (resourceController != null)
+            // 특수 효과 넣을 부분(폭발 등)
+            if (sp == (sp | 1 << (int)SPECIAL_EFFECT.BOOM))
             {
-                //    resourceController.ChangeHealth(-rangeWeaponHandler.Power);
+                // 폭발 이펙트 및 폭발데미지 추가 필요
+                DestroyProjectile(collision.ClosestPoint(transform.position), fxOnDestroy);
             }
-            DestroyProjectile(collision.ClosestPoint(transform.position), fxOnDestroy);
+            else
+            {
+                // 폭발 아니면 그냥 파괴
+                DestroyProjectile(collision.ClosestPoint(transform.position), fxOnDestroy);
+            }
+            // 상대 피격 처리 필요
         }
 
     }
@@ -65,9 +99,7 @@ public class ProjectileController : MonoBehaviour
         this.projectileManager = projectileManager;
 
         rangeWeaponHandler = weaponHandler;
-        float rotZ = Mathf.Atan2(direction.z, direction.x) * Mathf.Rad2Deg;
 
-        this.transform.rotation = Quaternion.Euler(0f, -rotZ, 90f);
         this.direction = direction;
         currentDuration = 0;
         transform.localScale = Vector3.one * weaponHandler.BulletSize;
@@ -86,5 +118,11 @@ public class ProjectileController : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+
+    // 특수효과 얻을 때 호출
+    public void AddSpecialEffect(int index)
+    {
+        sp += index;
+    }
 
 }

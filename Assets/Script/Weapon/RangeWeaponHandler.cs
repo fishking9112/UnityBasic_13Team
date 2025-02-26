@@ -50,7 +50,7 @@ public class RangeWeaponHandler : WeaponHandler
             float angle = minAngle + projectileAngleSpace * i;
             float randomSpread = Random.Range(-spread, spread);
             angle += randomSpread;
-            CreateProjectile(Controller.LookDirection, 0);
+            CreateProjectile(Controller.LookDirection, angle);
         }
     }
 
@@ -60,12 +60,12 @@ public class RangeWeaponHandler : WeaponHandler
         projectileManager.ShootBullet(this, projectileSpawnPosition.position, _lookDirection);
     }
 
-    private static Vector2 RotateVector2(Vector3 v,float degree)
-    {
-        Vector3 v3 = new Vector3(v.x, 0, v.y);
-        float rotZ = Mathf.Atan2(v.x, v.z) * Mathf.Rad2Deg;
 
-        return Quaternion.Euler(0, rotZ,0 ) * v;
+    // 화살 수 변화할 때 호출
+    public void SetProjectilePerShot(int count)
+    {
+        numberofProjectilePerShot = count;
+        spread = (count - 1) * 10;
     }
 
 
