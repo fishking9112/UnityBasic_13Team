@@ -1,17 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement; // ¾À ¸Å´ÏÀú »ç¿ë
+using UnityEngine.SceneManagement;
+//ì”¬ ì „í™˜ ë²„íŠ¼ìŠ¤í¬ë¦½íŠ¸ 
 
 public class SceneChangeBtn : MonoBehaviour
 {
-        // °ÔÀÓ¾À ÀÌµ¿
+        // ê²Œì„ì”¬ ì´ë™
     public void StartGameScene()
     {
         SceneManager.LoadScene("Test_DunGeon_Scene"); 
     }
 
-        // ¸ŞÀÎ¾À ÀÌµ¿
+        // ë©”ì¸ì”¬ ì´ë™
     public void GoHomeScene()
     {
         SceneManager.LoadScene("Main_Scene");
