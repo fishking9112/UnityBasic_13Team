@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,9 +48,8 @@ public class RangeWeaponHandler : WeaponHandler
 
         for(int i=0;i<numberOfProjectilePerShot;i++)
         {
-            float angle = minAngle + projectileAngleSpace * i;
-            float randomSpread = Random.Range(-spread, spread);
-            angle += randomSpread;
+            float angle = minAngle + projectileAngleSpace *(float)Math.Pow(-1f,i);
+            //angle += randomSpread;
             CreateProjectile(Controller.LookDirection, angle);
         }
     }
@@ -57,11 +57,15 @@ public class RangeWeaponHandler : WeaponHandler
 
     private void CreateProjectile(Vector3 _lookDirection, float angle)
     {
-        projectileManager.ShootBullet(this, projectileSpawnPosition.position, _lookDirection);
+        projectileManager.ShootBullet(this, projectileSpawnPosition.position, RotateVector3(_lookDirection,angle));
     }
 
+    private static Vector3 RotateVector3(Vector3 v, float degree)
+    {
+        return Quaternion.Euler(0, 0, degree) * v;
+    }
 
-    // È­»ì ¼ö º¯È­ÇÒ ¶§ È£Ãâ
+    // í™”ì‚´ ìˆ˜ ë³€í™”í•  ë•Œ í˜¸ì¶œ
     public void SetProjectilePerShot(int count)
     {
         numberofProjectilePerShot = count;

@@ -7,8 +7,8 @@ public class ProjectileController : MonoBehaviour
     enum SPECIAL_EFFECT
     {
         NORMAL=1,
-        REFRACTION=2,   // ±¼Àı
-        BOOM=4          // Æø¹ß
+        REFRACTION=2,   // êµ´ì ˆ
+        BOOM=4          // í­ë°œ
     }
 
     [SerializeField] private LayerMask levelCollisionLayer;
@@ -49,10 +49,10 @@ public class ProjectileController : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        // º®¿¡ ºÎ‹HÈú °æ¿ì
+        // ë²½ì— ë¶€ë”«í ê²½ìš°
         if (levelCollisionLayer.value == (levelCollisionLayer.value | (1 << collision.gameObject.layer)))
         {
-            // Æ¨±â´Â È­»ìÀÏ °æ¿ì °¢µµ ¹Ù²Ù±â(¹æÇâ »Ó ¾Æ´Ï¶ó È­»ì ÀÚÃ¼ ¹æÇâµµ ¹Ù²Ù¾î Áà¾ß ÇÔ)
+            // íŠ•ê¸°ëŠ” í™”ì‚´ì¼ ê²½ìš° ê°ë„ ë°”ê¾¸ê¸°(ë°©í–¥ ë¿ ì•„ë‹ˆë¼ í™”ì‚´ ìì²´ ë°©í–¥ë„ ë°”ê¾¸ì–´ ì¤˜ì•¼ í•¨)
             if(sp==(sp|1<<(int)SPECIAL_EFFECT.REFRACTION))
             {
                 Vector3 income = direction; 
@@ -68,27 +68,28 @@ public class ProjectileController : MonoBehaviour
             }
             else
             {
-                // Æ¨±â´Â È­»ìÀÌ ¾Æ´Ò °æ¿ì ÆÄ±«
+                // íŠ•ê¸°ëŠ” í™”ì‚´ì´ ì•„ë‹ ê²½ìš° íŒŒê´´
                 DestroyProjectile(collision.ClosestPoint(transform.position) - direction * 0.2f, fxOnDestroy);
             }
 
 
         }
-        // Å¸°Ù(Àû)¿¡°Ô ºÎ‹HÈú °æ¿ì
+        // íƒ€ê²Ÿ(ì )ì—ê²Œ ë¶€ë”«í ê²½ìš°
         else if (rangeWeaponHandler.target.value == (rangeWeaponHandler.target.value | (1 << collision.gameObject.layer)))
         {
-            // Æ¯¼ö È¿°ú ³ÖÀ» ºÎºĞ(Æø¹ß µî)
+            // íŠ¹ìˆ˜ íš¨ê³¼ ë„£ì„ ë¶€ë¶„(í­ë°œ ë“±)
             if (sp == (sp | 1 << (int)SPECIAL_EFFECT.BOOM))
             {
-                // Æø¹ß ÀÌÆåÆ® ¹× Æø¹ßµ¥¹ÌÁö Ãß°¡ ÇÊ¿ä
+                // í­ë°œ ì´í™íŠ¸ ë° í­ë°œë°ë¯¸ì§€ ì¶”ê°€ í•„ìš”
                 DestroyProjectile(collision.ClosestPoint(transform.position), fxOnDestroy);
             }
             else
             {
-                // Æø¹ß ¾Æ´Ï¸é ±×³É ÆÄ±«
+                // í­ë°œ ì•„ë‹ˆë©´ ê·¸ëƒ¥ íŒŒê´´
                 DestroyProjectile(collision.ClosestPoint(transform.position), fxOnDestroy);
             }
-            // »ó´ë ÇÇ°İ Ã³¸® ÇÊ¿ä
+            // ìƒëŒ€ í”¼ê²© ì²˜ë¦¬ í•„ìš”
+            // í˜¹ì‹œ ë°ë¯¸ì§€ í‘œì‹œ í• ê±°ë©´ ì—¬ê¸°ì—ì„œ
         }
 
     }
@@ -119,7 +120,7 @@ public class ProjectileController : MonoBehaviour
     }
 
 
-    // Æ¯¼öÈ¿°ú ¾òÀ» ¶§ È£Ãâ
+    // íŠ¹ìˆ˜íš¨ê³¼ ì–»ì„ ë•Œ í˜¸ì¶œ
     public void AddSpecialEffect(int index)
     {
         sp += index;

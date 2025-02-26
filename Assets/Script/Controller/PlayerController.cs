@@ -22,6 +22,7 @@ public class PlayerController : BaseController
 
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         overlapSize = new Vector3(10, 1, 10);
+
         StartCoroutine(SearchTarget());
         StartCoroutine(LookTarget());
         StartCoroutine(StartAttack());
@@ -143,7 +144,7 @@ public class PlayerController : BaseController
             yield return new WaitWhile(() => nearestEnemy==null);
             yield return new WaitUntil(() => movementDirection == Vector3.zero);
             yield return new WaitForSeconds(1);
-            // ¹ß»ç
+            // ë°œì‚¬
             Attack();
         }
     }
