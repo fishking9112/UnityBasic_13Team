@@ -48,8 +48,7 @@ public class RangeWeaponHandler : WeaponHandler
 
         for(int i=0;i<numberOfProjectilePerShot;i++)
         {
-            float angle = minAngle + projectileAngleSpace *(i-1);
-            //angle += randomSpread;
+            float angle = projectileAngleSpace *(i-1);
             CreateProjectile(Controller.LookDirection, angle);
         }
     }
