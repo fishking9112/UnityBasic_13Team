@@ -36,7 +36,6 @@ public class WeaponHandler : MonoBehaviour
 
     public BaseController Controller { get; private set; }
 
-    private Animator animator;
     private SpriteRenderer weaponRenderer;
 
     public AudioClip attackSoundClip;
@@ -44,10 +43,8 @@ public class WeaponHandler : MonoBehaviour
     protected virtual void Awake()
     {
         Controller = GetComponentInParent<BaseController>();
-        animator = GetComponentInChildren<Animator>();
         weaponRenderer = GetComponentInChildren<SpriteRenderer>();
 
-        animator.speed = 1.0f / delay;
         transform.localScale = Vector3.one * weaponSize;
     }
 
@@ -68,7 +65,7 @@ public class WeaponHandler : MonoBehaviour
 
     public void AttackAnimation()
     {
-        animator.SetTrigger(IsAttack);
+
     }
     public virtual void Rotate(bool isLeft)
     {
