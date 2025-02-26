@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 2799999876508026795}
   - component: {fileID: 6115232514356106293}
   m_Layer: 5
-  m_Name: "Character_View_\uD504\uB9AC\uD3A9"
+  m_Name: Character_View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
