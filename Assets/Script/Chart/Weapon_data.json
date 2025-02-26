@@ -1,23 +1,88 @@
-[
-    {
-        "id": 1001,
-        "name": "활",
-        "capability_value": 150,
-        "Type": 1,
-        "rating": 1
-    },
-    {
-        "id": 2001,
-        "name": "초보조끼",
-        "capability_value": 200,
-        "Type": 2,
-        "rating": 1
-    },
-    {
-        "id": 3001,
-        "name": "동반지",
-        "capability_value": 1,
-        "Type": 3,
-        "rating": 1
-    }
-] 
+{
+    "items": [
+        {
+            "id": 1001,
+            "name": "초보자의 활",
+            "capability_value": 150,
+            "Type": 1,
+            "rating": 1
+        },
+        {
+            "id": 1002,
+            "name": "사냥꾼의 활",
+            "capability_value": 250,
+            "Type": 1,
+            "rating": 2
+        },
+        {
+            "id": 1003,
+            "name": "정예 궁수의 활",
+            "capability_value": 400,
+            "Type": 1,
+            "rating": 3
+        },
+        {
+            "id": 1004,
+            "name": "드래곤 슬레이어",
+            "capability_value": 650,
+            "Type": 1,
+            "rating": 4
+        },
+        {
+            "id": 2001,
+            "name": "초보자의 조끼",
+            "capability_value": 200,
+            "Type": 2,
+            "rating": 1
+        },
+        {
+            "id": 2002,
+            "name": "가죽 갑옷",
+            "capability_value": 350,
+            "Type": 2,
+            "rating": 2
+        },
+        {
+            "id": 2003,
+            "name": "미스릴 갑옷",
+            "capability_value": 550,
+            "Type": 2,
+            "rating": 3
+        },
+        {
+            "id": 2004,
+            "name": "드래곤 스케일 아머",
+            "capability_value": 800,
+            "Type": 2,
+            "rating": 4
+        },
+        {
+            "id": 3001,
+            "name": "구리 반지",
+            "capability_value": 50,
+            "Type": 3,
+            "rating": 1
+        },
+        {
+            "id": 3002,
+            "name": "은반지",
+            "capability_value": 100,
+            "Type": 3,
+            "rating": 2
+        },
+        {
+            "id": 3003,
+            "name": "마력의 반지",
+            "capability_value": 200,
+            "Type": 3,
+            "rating": 3
+        },
+        {
+            "id": 3004,
+            "name": "영웅의 반지",
+            "capability_value": 350,
+            "Type": 3,
+            "rating": 4
+        }
+    ]
+} 

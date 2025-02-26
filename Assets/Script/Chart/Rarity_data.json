@@ -1,6 +1,20 @@
 {
-    "일반": 50,
-    "희귀": 30,
-    "에픽": 15,
-    "전설": 5
+  "rarities": [
+    {
+      "name": "normal",
+      "probability": 60
+    },
+    {
+      "name": "rare",
+      "probability": 30
+    },
+    {
+      "name": "epic",
+      "probability": 9
+    },
+    {
+      "name": "legendary",
+      "probability": 1
+    }
+  ]
 }

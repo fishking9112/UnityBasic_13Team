@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using System.IO;
+using BackendData.Base; // SerializableDict 클래스를 사용하기 위한 네임스페이스 추가
 
 namespace BackendData.GameData {
     //===============================================================
@@ -147,6 +149,83 @@ namespace BackendData.GameData {
                 Debug.LogError($"UserData 로드 중 오류: {e.Message}");
                 InitializeData();
             }
+        }
+
+        public new void SaveToJson()
+        {
+            try
+            {
+                // 초기화 확인 - 모든 값이 0이면 초기화
+                if (Level == 0 && MaxExp == 0 && Gold == 0)
+                {
+                    Debug.Log("UserData 값이 모두 0입니다. 초기화를 수행합니다.");
+                    InitializeData();
+                }
+                
+                // 파일 경로 설정
+                string filePath = Path.Combine(Application.persistentDataPath, $"{GetFileName()}.json");
+                
+                Debug.Log($"UserData JSON 파일 경로: {filePath}");
+                
+                // 데이터 변환
+                Dictionary<string, object> saveData = GetSaveData();
+                
+                // 저장 전 데이터 확인
+                Debug.Log($"저장할 UserData 내용: Level={Level}, Gold={Gold}, MaxExp={MaxExp}");
+                
+                string jsonString = JsonUtility.ToJson(new SerializableDict<string, object>(saveData), true);
+                
+                // 디렉토리 확인 및 생성
+                string directory = Path.GetDirectoryName(filePath);
+                if (!Directory.Exists(directory) && !string.IsNullOrEmpty(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+                
+                // 파일 저장
+                File.WriteAllText(filePath, jsonString);
+                Debug.Log($"UserData 데이터가 저장되었습니다: {filePath}");
+                
+                // 저장 후 파일 존재 확인
+                if (File.Exists(filePath))
+                {
+                    Debug.Log($"UserData 파일이 성공적으로 생성되었습니다.");
+                    
+                    // 파일 내용 확인 (디버깅용)
+                    string content = File.ReadAllText(filePath);
+                    Debug.Log($"UserData 파일 내용: {content}");
+                }
+                else
+                {
+                    Debug.LogError($"UserData 파일 생성 실패: {filePath}");
+                }
+                
+                IsChangedData = false;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"UserData 데이터 저장 중 오류: {ex.Message}\n{ex.StackTrace}");
+            }
+        }
+
+        // UserData 클래스에 공개 초기화 메서드 추가
+        public void Initialize()
+        {
+            // protected 메서드 호출
+            InitializeData();
+            
+            // 변경 플래그 설정
+            IsChangedData = true;
+            
+            Debug.Log($"UserData 초기화 완료: Level={Level}, Gold={Gold}, MaxExp={MaxExp}");
+        }
+
+        // 골드만 추가/차감하는 메서드
+        public void AddGold(int amount)
+        {
+            IsChangedData = true;
+            Gold += amount;
+            Debug.Log($"골드 변경: {amount}, 현재 골드: {Gold}");
         }
     }
 }
