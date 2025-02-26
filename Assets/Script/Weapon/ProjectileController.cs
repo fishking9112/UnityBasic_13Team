@@ -25,12 +25,15 @@ public class ProjectileController : MonoBehaviour
 
     private ProjectileManager projectileManager;
 
-    private int sp=1;
+    private int sp;
 
+    // 튕기는 화살 튕기는 횟수
+    private int reflectCount;
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
-
+        sp = 1;
+        reflectCount = 1;
     }
 
     private void Update()
@@ -52,8 +55,8 @@ public class ProjectileController : MonoBehaviour
         // 벽에 부딫힐 경우
         if (levelCollisionLayer.value == (levelCollisionLayer.value | (1 << collision.gameObject.layer)))
         {
-            // 튕기는 화살일 경우 각도 바꾸기(방향 뿐 아니라 화살 자체 방향도 바꾸어 줘야 함)
-            if(sp==(sp|1<<(int)SPECIAL_EFFECT.REFRACTION))
+            // 튕기는 화살일 경우, 튕기는 횟수 체크
+            if(sp==(sp|1<<(int)SPECIAL_EFFECT.REFRACTION) && reflectCount>0)
             {
                 Vector3 income = direction; 
 
@@ -65,10 +68,12 @@ public class ProjectileController : MonoBehaviour
                 float rotZ = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
 
                 transform.rotation = Quaternion.Euler(0,rotZ,0);
+
+                reflectCount--;
             }
             else
             {
-                // 튕기는 화살이 아닐 경우 파괴
+                // 튕기는 화살이 아닐 경우, 튕김 횟수가 다 된 경우 파괴
                 DestroyProjectile(collision.ClosestPoint(transform.position) - direction * 0.2f, fxOnDestroy);
             }
 
@@ -89,7 +94,9 @@ public class ProjectileController : MonoBehaviour
                 DestroyProjectile(collision.ClosestPoint(transform.position), fxOnDestroy);
             }
             // 상대 피격 처리 필요
-            // 혹시 데미지 표시 할거면 여기에서
+
+            // 혹시 데미지 표시 할거면 여기에서 호출하면 될듯?
+
         }
 
     }

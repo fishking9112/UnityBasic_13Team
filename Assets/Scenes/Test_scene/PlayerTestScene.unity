@@ -1832,7 +1832,7 @@ MonoBehaviour:
   bulletSize: 1
   duration: 10
   spread: 0
-  numberofProjectilePerShot: 2
+  numberofProjectilePerShot: 3
   multipleProjectileAngle: 30
   projectileColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!33 &588608672461509208
