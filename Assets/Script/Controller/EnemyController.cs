@@ -69,7 +69,19 @@ public class EnemyController : BaseController
 
     protected Vector3 DirectionToTarget()
     {
-        return (target.position - transform.position).normalized;
+        Vector3 target2DPos = target.position;
+        target2DPos.y = 0f;
+        Vector3 transform2DPos = transform.position;
+        transform2DPos.y = 0f;
+
+        return (target2DPos - transform2DPos).normalized;
+
+        //return (target.position - transform.position).normalized;
+
+        /*
+         * 3D 좌표계로 방향벡터를 구했을 때 , Y 위치값에 따라 방향벡터의 Y값이 달라 질 수 있어서
+         * Y값을 0으로 만든 뒤 , 노말벡터를 만들어 방향벡터를 구해준다.
+         */
     }
 
     protected override void HandleAction()

@@ -32,6 +32,10 @@ namespace UI {
         }
         
         void Start() {
+            // 초기화 단계 설정
+            Init();
+            
+            // 로딩 프로세스 시작
             StartCoroutine(LoadSceneProcess());
         }
 
@@ -97,6 +101,12 @@ namespace UI {
                 var gameDataManager = gameDataObj.AddComponent<GameDataManager>();
                 DontDestroyOnLoad(gameDataObj);
 
+                // StatHandler 생성 및 초기화
+                var statHandlerObj = new GameObject("StatHandler");
+                var statHandler = statHandlerObj.AddComponent<StatHandler>();
+                DontDestroyOnLoad(statHandlerObj);
+                Debug.Log("StatHandler 객체 생성 완료");
+
                 // UserData를 체크하여 신규/기존 유저 구분
                 var userData = new UserData();
                 bool isNewUser = !userData.LoadFromJson();
@@ -127,6 +137,10 @@ namespace UI {
                     _currentLoadingCount++;
                     loadingSlider.value = _currentLoadingCount;
                 }
+
+                // StatHandler 스탯 계산 실행
+                statHandler.RefreshStats();
+                Debug.Log("StatHandler 스탯 계산 완료");
 
                 // 다음 초기화 단계로 진행
                 NextStep(true, "", "", "");
@@ -219,6 +233,11 @@ namespace UI {
             // 디버그 로그 추가
             Debug.Log($"LoadSceneProcess 시작: nextSceneName = {nextSceneName}");
             
+            // 초기화 단계 실행
+            if (_initializeStep.Count > 0) {
+                _initializeStep.Dequeue()?.Invoke();
+            }
+            
             // 데이터 매니저 초기화 (없으면 생성)
             if (GameDataManager.Instance == null)
             {
@@ -235,6 +254,16 @@ namespace UI {
                 Debug.LogWarning("nextSceneName이 비어 있어 기본값 'Main_scene'으로 설정합니다.");
                 nextSceneName = "Main_scene";
             }
+            
+            // 비동기 씬 로드 전에 StatHandler 생성
+            var statHandlerObj = new GameObject("StatHandler");
+            var statHandler = statHandlerObj.AddComponent<StatHandler>();
+            DontDestroyOnLoad(statHandlerObj);
+            Debug.Log("StatHandler 객체 생성 완료");
+            
+            // StatHandler 스탯 계산 실행
+            statHandler.RefreshStats();
+            Debug.Log("StatHandler 스탯 계산 완료");
             
             // 비동기 씬 로드
             Debug.Log($"씬 로드 시작: {nextSceneName}");

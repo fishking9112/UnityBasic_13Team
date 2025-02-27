@@ -63,9 +63,27 @@ public class StatHandler : MonoBehaviour
     private string weaponDataPath;
     private string weaponInventoryPath;
     private string perkStatsPath;
+    private string userDataPath;
     
     // 무기 데이터 캐시
     private Dictionary<int, WeaponItem> weaponDataDict = new Dictionary<int, WeaponItem>();
+
+    private UserData userData;
+
+    [System.Serializable]
+    public class UserData
+    {
+        public List<string> keys;
+        public List<string> values;
+        
+        public string GetValue(string key)
+        {
+            int index = keys.IndexOf(key);
+            if (index >= 0 && index < values.Count)
+                return values[index];
+            return null;
+        }
+    }
 
     // 프로퍼티
     public int Health => finalHealth;
@@ -82,9 +100,13 @@ public class StatHandler : MonoBehaviour
         weaponDataPath = Path.Combine(Application.dataPath, "Script/Chart/Weapon_data.json");
         weaponInventoryPath = Path.Combine(Application.persistentDataPath, "WeaponInventory.json");
         perkStatsPath = Path.Combine(Application.persistentDataPath, "Stats_data.json");
+        userDataPath = Path.Combine(Application.persistentDataPath, "UserData.json");
         
         // 무기 데이터 로드
         LoadWeaponData();
+        
+        // 유저 데이터 로드
+        LoadUserData();
         
         // 스탯 계산 및 초기화
         CalculateStats();
@@ -119,15 +141,62 @@ public class StatHandler : MonoBehaviour
         }
     }
 
+    private void LoadUserData()
+    {
+        try
+        {
+            if (File.Exists(userDataPath))
+            {
+                string json = File.ReadAllText(userDataPath);
+                userData = JsonUtility.FromJson<UserData>(json);
+                Debug.Log("유저 데이터 로드 완료");
+            }
+            else
+            {
+                Debug.LogWarning("유저 데이터 파일을 찾을 수 없습니다: " + userDataPath);
+                userData = new UserData(); // 기본값 생성
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"유저 데이터 로드 중 오류: {e.Message}");
+            userData = new UserData(); // 오류 시 기본값 생성
+        }
+    }
+
     public void CalculateStats()
     {
-        // 1. 기본 스탯 설정
+        // 1. 유저 데이터에서 기본 스탯 설정 (없으면 기본값 사용)
         finalHealth = baseHealth;
         finalAttack = baseAttack;
         finalDefense = baseDefense;
         finalDamageReduction = baseDamageReduction;
         finalCriticalRate = baseCriticalRate;
         finalSpeed = baseSpeed;
+        
+        // UserData.json에서 값 가져오기
+        if (userData != null)
+        {
+            string attackStr = userData.GetValue("Attack");
+            string defenseStr = userData.GetValue("Defense");
+            string defenseRateStr = userData.GetValue("DefenseRate");
+            string criticalRateStr = userData.GetValue("CriticalRate");
+            
+            if (!string.IsNullOrEmpty(attackStr)) 
+                finalAttack = int.Parse(attackStr);
+            
+            if (!string.IsNullOrEmpty(defenseStr)) 
+                finalDefense = int.Parse(defenseStr);
+            
+            if (!string.IsNullOrEmpty(defenseRateStr)) 
+                finalDamageReduction = float.Parse(defenseRateStr);
+            
+            if (!string.IsNullOrEmpty(criticalRateStr)) 
+                finalCriticalRate = float.Parse(criticalRateStr);
+            
+            Debug.Log($"유저 데이터에서 로드한 스탯: 공격력 {finalAttack}, 방어력 {finalDefense}, " +
+                     $"방어율 {finalDamageReduction:F2}, 크리티컬율 {finalCriticalRate:F2}");
+        }
 
         // 2. 특전 스탯(Stats_data.json) 적용
         ApplyPerkStats();
@@ -188,9 +257,13 @@ public class StatHandler : MonoBehaviour
                     json = "{\"items\":" + json + "}";
                     var wrapper = JsonUtility.FromJson<InventoryWrapper>(json);
                     inventoryItems = wrapper.items;
+                    
+                    // 디버그: 인벤토리 아이템 수 확인
+                    Debug.Log($"인벤토리에서 로드된 아이템 수: {inventoryItems.Count}");
                 }
                 
                 // 장착된 아이템 찾기
+                int equippedCount = 0;
                 foreach (var item in inventoryItems)
                 {
                     if (item.Equip == 1 && weaponDataDict.ContainsKey(item.id))
@@ -198,8 +271,15 @@ public class StatHandler : MonoBehaviour
                         // 장착된 아이템의 스탯 적용
                         WeaponItem weaponItem = weaponDataDict[item.id];
                         ApplyItemStat(weaponItem);
+                        equippedCount++;
+                        
+                        // 디버그: 장착된 아이템 정보
+                        Debug.Log($"장착된 아이템 발견: ID {item.id}, 이름 {weaponItem.name}, 타입 {weaponItem.Type}, 등급 {weaponItem.rating}");
                     }
                 }
+                
+                // 디버그: 장착된 아이템 총 개수
+                Debug.Log($"장착된 아이템 총 개수: {equippedCount}");
             }
             else
             {
@@ -220,6 +300,14 @@ public class StatHandler : MonoBehaviour
 
     private void ApplyItemStat(WeaponItem item)
     {
+        // 아이템 적용 전 스탯 기록 (디버그용)
+        int prevAttack = finalAttack;
+        int prevDefense = finalDefense;
+        int prevHealth = finalHealth;
+        float prevDamageReduction = finalDamageReduction;
+        float prevCriticalRate = finalCriticalRate;
+        float prevSpeed = finalSpeed;
+        
         // 아이템 타입에 따른 스탯 증가
         switch (item.Type)
         {
@@ -247,7 +335,14 @@ public class StatHandler : MonoBehaviour
                 break;
         }
         
-        Debug.Log($"아이템 '{item.name}' 스탯 적용: Type {item.Type}, 능력치 {item.capability_value}, 등급 {item.rating}");
+        // 아이템 적용 후 스탯 변화 상세 로그
+        Debug.Log($"아이템 '{item.name}' 스탯 적용 상세: " +
+                  $"공격력 {prevAttack} → {finalAttack} (+{finalAttack - prevAttack}), " +
+                  $"방어력 {prevDefense} → {finalDefense} (+{finalDefense - prevDefense}), " +
+                  $"체력 {prevHealth} → {finalHealth} (+{finalHealth - prevHealth}), " +
+                  $"방어율 {prevDamageReduction:F3} → {finalDamageReduction:F3} (+{finalDamageReduction - prevDamageReduction:F3}), " +
+                  $"크리티컬율 {prevCriticalRate:F3} → {finalCriticalRate:F3} (+{finalCriticalRate - prevCriticalRate:F3}), " +
+                  $"이동속도 {prevSpeed:F3} → {finalSpeed:F3} (+{finalSpeed - prevSpeed:F3})");
     }
 
     private void SaveTotalStats()
@@ -271,7 +366,14 @@ public class StatHandler : MonoBehaviour
             string chartPath = Path.Combine(Application.dataPath, "Script/Chart/TotalStats.json");
             File.WriteAllText(chartPath, json);
             
-            Debug.Log("최종 스탯 저장 완료: " + totalStatsFilePath);
+            Debug.Log($"최종 스탯 저장 완료: 체력 {finalHealth}, 공격력 {finalAttack}, 방어력 {finalDefense}, " +
+                     $"방어율 {finalDamageReduction:F2}, 크리티컬율 {finalCriticalRate:F2}, 이동속도 {finalSpeed:F1}");
+            
+            // TotalStatsReader가 있다면 새로고침 요청
+            if (TotalStatsReader.Instance != null)
+            {
+                TotalStatsReader.Instance.RefreshStats();
+            }
         }
         catch (System.Exception e)
         {
@@ -303,5 +405,15 @@ public class StatHandler : MonoBehaviour
     public bool IsCritical()
     {
         return Random.value <= finalCriticalRate;
+    }
+
+    private void Start()
+    {
+        Debug.Log("StatHandler 시작됨");
+        // 스탯 계산 및 초기화 (Awake에서 이미 호출했다면 중복 호출 방지)
+        if (finalHealth == 0) // 아직 초기화되지 않았다면
+        {
+            CalculateStats();
+        }
     }
 }

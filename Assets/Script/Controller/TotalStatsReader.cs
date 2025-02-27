@@ -80,12 +80,12 @@ public class TotalStatsReader : MonoBehaviour
                 string json = File.ReadAllText(statsFilePath);
                 statsData = JsonUtility.FromJson<TotalStatsData>(json);
                 isDataLoaded = true;
-                Debug.Log("TotalStats 데이터 로드 완료");
+                Debug.Log($"TotalStats 데이터 로드 완료: 체력 {statsData.최대체력}, 공격력 {statsData.공격력}, 방어력 {statsData.방어력}");
                 return true;
             }
             else
             {
-                // 파일이 없으면 기본값으로 초기화
+                // 파일이 없으면 기본값으로 초기화하지만 StatHandler에서 곧 생성할 것임
                 statsData = new TotalStatsData
                 {
                     최대체력 = 100,
@@ -95,7 +95,7 @@ public class TotalStatsReader : MonoBehaviour
                     크리티컬율 = 0.05f,
                     이동속도 = 3f
                 };
-                Debug.LogWarning("TotalStats 파일이 없어 기본값으로 설정됨");
+                Debug.LogWarning("TotalStats 파일이 없어 기본값으로 설정됨 - StatHandler가 곧 정확한 값을 계산할 것임");
                 return false;
             }
         }
