@@ -2750,7 +2750,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   monsterSpawn: {fileID: 5799692419273584852}
-  enemyPrefabs: []
+  enemyPrefabs:
+  - {fileID: 147780376288778718, guid: 626ff242169f96f4bbd86440ca0932b8, type: 3}
 --- !u!1 &2425524013125015527
 GameObject:
   m_ObjectHideFlags: 0
