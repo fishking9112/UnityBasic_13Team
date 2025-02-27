@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.InputSystem.InputControlExtensions;
 
 public class EnemyController : BaseController
 {
@@ -9,9 +10,6 @@ public class EnemyController : BaseController
 
     [SerializeField] public float followRange = 15f;
     private float timeSinceLastAttack = float.MaxValue;
-
-
-
 
     public void Init(EnemyManager enemyManager,Transform target)
     {
@@ -22,7 +20,40 @@ public class EnemyController : BaseController
     {
         base.Update();
 
-        HandleAttackDelay();
+        switch (enumState)
+        {
+            case State.Idle:
+                FindTarget();
+                break;
+            case State.Move:
+                HandleAttackDelay();
+                break;
+            case State.Attack:
+                HandleAction();
+                break;
+            case State.Dead:
+                break;
+        }
+
+    }
+
+    private void FindTarget()
+    {
+        if (weaponHandler == null || target == null)
+        {
+            if (!movementDirection.Equals(Vector3.zero))
+                movementDirection = Vector3.zero;
+            return;
+        }
+
+        float distance = DistanceToTarget();
+        Vector3 direction = DirectionToTarget();
+
+        if (distance <= followRange)
+        {
+            lookDirection = direction;
+            enumState = State.Move;
+        }
     }
 
     protected float DistanceToTarget()
@@ -39,37 +70,19 @@ public class EnemyController : BaseController
     {
         base.HandleAction();
 
-
-        if(weaponHandler==null || target==null)
-        {
-            if (!movementDirection.Equals(Vector3.zero))
-                movementDirection = Vector3.zero;
-            return;
-        }
-
         float distance = DistanceToTarget();
         Vector3 direction = DirectionToTarget();
 
-        //isAttacking = false;
-
-        if(distance <= followRange)
+        if (distance < weaponHandler.AttackRange && isAttacking == true)
         {
-            lookDirection = direction;
+            Debug.Log("Att !! ");
+            isAttacking = false;
 
-            if (distance < weaponHandler.AttackRange && isAttacking == false)
-            {
-                Debug.Log("Att !! ");
-                isAttacking = true;
-
-                movementDirection = Vector2.zero;
-
-                return;
-            }
-            else
-            {
-                animationHandler.Attack(false);
-            }
-
+            movementDirection = Vector2.zero;
+        }
+        else if (distance > weaponHandler.AttackRange)
+        {
+            enumState = State.Move;
             movementDirection = direction;
         }
     }
@@ -91,14 +104,11 @@ public class EnemyController : BaseController
             timeSinceLastAttack += Time.deltaTime;
         }
 
-        if (isAttacking && timeSinceLastAttack > weaponHandler.Delay)
+        if (!isAttacking && timeSinceLastAttack > weaponHandler.Delay)
         {
             timeSinceLastAttack = 0;
             Attack();
+            enumState = State.Attack;
         }
-
-
     }
-
-
 }
