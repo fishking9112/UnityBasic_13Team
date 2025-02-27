@@ -29,6 +29,7 @@ public class BaseController : MonoBehaviour
 
     protected bool isAttacking;
 
+    [SerializeField]
     protected State enumState;
 
     protected virtual void Awake()
@@ -56,6 +57,7 @@ public class BaseController : MonoBehaviour
                 Rotate(lookDirection);
                 break;
             case State.Attack:
+                Rotate(lookDirection);
                 HandleAction();
                 break;
             case State.Dead:

@@ -49,7 +49,13 @@ public class EnemyController : BaseController
         float distance = DistanceToTarget();
         Vector3 direction = DirectionToTarget();
 
-        if (distance <= followRange)
+        if(distance<=weaponHandler.AttackRange)
+        {
+            enumState = State.Attack;
+
+        }
+
+        else if (distance <= followRange)
         {
             lookDirection = direction;
             enumState = State.Move;
@@ -77,13 +83,13 @@ public class EnemyController : BaseController
         {
             Debug.Log("Att !! ");
             isAttacking = false;
-
-            movementDirection = Vector2.zero;
+            StopMoving();
         }
         else if (distance > weaponHandler.AttackRange)
         {
             enumState = State.Move;
             movementDirection = direction;
+            animationHandler.Attack(false);
         }
     }
 
@@ -99,16 +105,33 @@ public class EnemyController : BaseController
         if (weaponHandler == null)
             return;
 
+        movementDirection = DirectionToTarget();
+        lookDirection = movementDirection;
+
         if (timeSinceLastAttack <= weaponHandler.Delay)
         {
             timeSinceLastAttack += Time.deltaTime;
         }
 
-        if (!isAttacking && timeSinceLastAttack > weaponHandler.Delay)
+        if (!isAttacking && timeSinceLastAttack > weaponHandler.Delay && DistanceToTarget() < weaponHandler.AttackRange)
         {
             timeSinceLastAttack = 0;
+            StopMoving();
             Attack();
             enumState = State.Attack;
+            return;
         }
+
+        else if(DistanceToTarget() < weaponHandler.AttackRange)
+        {
+            enumState = State.Idle;
+
+        }
+    }
+
+    private void StopMoving()
+    {
+        _rigidbody.velocity = Vector3.zero;
+        animationHandler.Move(Vector3.zero);
     }
 }

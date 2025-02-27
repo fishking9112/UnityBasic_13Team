@@ -2503,6 +2503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponPrefab: {fileID: 0}
+  enumState: 0
   isBattle: 1
 --- !u!114 &8673341397675803124
 MonoBehaviour:
@@ -2752,10 +2753,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b46c5e8d4ce0f8b47945070da0e4a4c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delay: 1
+  delay: 0.1
   weaponSize: 1
   power: 1
-  speed: 1
+  speed: 15
   attackRange: 10
   target:
     serializedVersion: 2
