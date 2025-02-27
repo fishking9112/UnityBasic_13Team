@@ -8,7 +8,7 @@ public class ScenePortal : MonoBehaviour
 
     private void Awake()
     {
-        gameSceneManager = GetComponent<GameSceneManager>();
+        gameSceneManager = GameObject.Find("GameSceneManager").GetComponent<GameSceneManager>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -18,6 +18,18 @@ public class ScenePortal : MonoBehaviour
         if ( other.transform.CompareTag("Player"))
         {
             Debug.Log("Player Enter");
+
+            if (gameSceneManager != null)
+            {
+                gameSceneManager.LoadNextScene();
+            }
+            else
+            {
+                Debug.Log("gameSceneManager is null !");
+            }
+
+
+
         }
     }
 }

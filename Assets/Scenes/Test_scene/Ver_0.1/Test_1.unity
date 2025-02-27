@@ -1280,7 +1280,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 511777067}
-  curScene: 3
+  NextScene: 4
 --- !u!1 &1713374837
 GameObject:
   m_ObjectHideFlags: 0

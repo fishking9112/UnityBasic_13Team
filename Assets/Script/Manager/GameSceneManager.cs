@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum Scene_Number { Main = 1, ACT_1 = 3, ACT_2 , ACT_3 , ACT_4 }
+public enum Scene_Number { Main = 2, ACT_1 = 3, ACT_2 , ACT_3 , ACT_4 }
 public class GameSceneManager : MonoBehaviour
 {
     public GameManager gameManager;
 
-    public Scene_Number curScene;
+    public Scene_Number NextScene;
 
     private void Awake()
     {
@@ -38,13 +38,13 @@ public class GameSceneManager : MonoBehaviour
     }
     IEnumerator LoadMyAsyncScene()
     {
-        int NextSceneNumber = (int)curScene + 1;
-        curScene++;
+        int NextSceneNumber = (int)NextScene;
+
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(NextSceneNumber, LoadSceneMode.Single);
 
         while (!asyncLoad.isDone)
         {
-            gameManager.Init();
+            //gameManager.Init();
 
             yield return null;
         }

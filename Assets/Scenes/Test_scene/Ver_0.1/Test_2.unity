@@ -977,7 +977,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 511777067}
-  curScene: 4
+  NextScene: 5
 --- !u!1001 &943917223
 PrefabInstance:
   m_ObjectHideFlags: 0

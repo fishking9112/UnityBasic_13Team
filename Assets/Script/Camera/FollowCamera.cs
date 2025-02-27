@@ -21,14 +21,14 @@ public class FollowCamera : MonoBehaviour
         if (target == null)
             return;
 
-        //À§Ä¡
+        //ìœ„ì¹˜
         Vector3 pos = target.position;
         pos.y = cameraHeight;
 
         transform.position = pos;
-        //È¸Àü°ª ÃÊ±âÈ­
+        //íšŒì „ê°’ ì´ˆê¸°í™”
         transform.rotation = Quaternion.identity;
-        //¾Æ·¡·Î 90µµ ³»·Áº¸°Ô ÇÑ´Ù
+        //ì•„ë˜ë¡œ 90ë„ ë‚´ë ¤ë³´ê²Œ í•œë‹¤
         float rotX = 90.0f;
         transform.rotation = Quaternion.Euler(rotX, 0f, 0f);
     }
@@ -38,8 +38,8 @@ public class FollowCamera : MonoBehaviour
 
         Vector3 pos = target.position;
         pos.y = cameraHeight;
-        //xÃà °íÁ¤
-        pos.x = 0.0f;
+        //xì¶• ê³ ì •
+        //pos.x = 0.0f;
 
         transform.position = pos;
     }
