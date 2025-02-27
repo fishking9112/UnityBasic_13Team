@@ -2530,8 +2530,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0499827e136b2094490adf8e22e50bb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
-  speed: 3
+  baseHealth: 100
+  baseAttack: 10
+  baseDefense: 5
+  baseDamageReduction: 0.1
+  baseCriticalRate: 0.05
+  baseSpeed: 6
+  perkStatMultiplier: 75
 --- !u!114 &6484105569863706307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2773,6 +2778,7 @@ MonoBehaviour:
   numberofProjectilePerShot: 2
   multipleProjectileAngle: 30
   projectileColor: {r: 0, g: 0, b: 0, a: 0}
+  specailAbility: 0
 --- !u!1 &8800906711780973514
 GameObject:
   m_ObjectHideFlags: 0
