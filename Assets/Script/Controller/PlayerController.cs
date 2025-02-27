@@ -18,10 +18,12 @@ public class PlayerController : BaseController
 
     public AudioClip attackSoundClip;
 
+    private InGamePlayerManager playerManager;
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
-        _camera=Camera.main;
+        playerManager = InGamePlayerManager.Instance;
+        _camera =Camera.main;
 
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         overlapSize = new Vector3(10, 1, 10);
@@ -166,4 +168,10 @@ public class PlayerController : BaseController
         // 1=멀티샷 2=튕기는화살 3=폭발화살
     }
 
+    public override void TakeDamage(float changed)
+    {
+        base.TakeDamage(changed);
+
+        playerManager.TakeDamage((int)changed);
+    }
 }

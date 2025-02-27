@@ -95,6 +95,8 @@ public class ProjectileController : MonoBehaviour
             }
             // 상대 피격 처리 필요
 
+            collision.GetComponent<BaseController>().TakeDamage(rangeWeaponHandler.Power);
+
             // 혹시 데미지 표시 할거면 여기에서 호출하면 될듯?
 
         }

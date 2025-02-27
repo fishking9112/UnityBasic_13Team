@@ -138,4 +138,14 @@ public class BaseController : MonoBehaviour
 
     }
 
+    public virtual void TakeDamage(float changed)
+    {
+
+    }
+
+    public int GetPower()
+    {
+        return statHandler.Attack;
+    }
+
 }

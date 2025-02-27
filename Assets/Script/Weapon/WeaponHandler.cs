@@ -36,14 +36,12 @@ public class WeaponHandler : MonoBehaviour
 
     public BaseController Controller { get; private set; }
 
-    private SpriteRenderer weaponRenderer;
 
    // public AudioClip attackSoundClip;
 
     protected virtual void Awake()
     {
         Controller = GetComponentInParent<BaseController>();
-        weaponRenderer = GetComponentInChildren<SpriteRenderer>();
 
         transform.localScale = Vector3.one * weaponSize;
     }
