@@ -38,7 +38,7 @@ public class WeaponHandler : MonoBehaviour
 
     private SpriteRenderer weaponRenderer;
 
-    public AudioClip attackSoundClip;
+   // public AudioClip attackSoundClip;
 
     protected virtual void Awake()
     {
@@ -57,10 +57,9 @@ public class WeaponHandler : MonoBehaviour
     {
         AttackAnimation();
 
-        if (attackSoundClip != null)
-        {
-            //SoundManger.PlayClip(attackSoundClip);
-        }
+        //if (attackSoundClip != null) ;
+           // SoundManager.PlayClip(attackSoundClip);
+        
     }
 
     public void AttackAnimation()
