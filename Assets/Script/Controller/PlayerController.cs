@@ -98,15 +98,14 @@ public class PlayerController : BaseController
         if (nearestEnemy == null)
             return;
 
-        lookDirection = (nearestEnemy.position - transform.position);
 
-        if (lookDirection.magnitude < .9f)
+        if (movementDirection.magnitude > .9f)
         {
-            lookDirection = Vector3.zero;
+            lookDirection = movementDirection; ;
         }
         else
         {
-            lookDirection = lookDirection.normalized;
+            lookDirection = (nearestEnemy.position - transform.position).normalized;
         }
     }
 
@@ -119,9 +118,9 @@ public class PlayerController : BaseController
     {
         while(true)
         {
+            yield return new WaitForSeconds(1);
             yield return new WaitWhile(() => nearestEnemy==null);
             yield return new WaitUntil(() => movementDirection == Vector3.zero);
-            yield return new WaitForSeconds(1);
             // 발사
             Attack();
         }
