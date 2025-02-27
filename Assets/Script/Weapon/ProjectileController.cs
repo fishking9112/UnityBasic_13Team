@@ -124,7 +124,7 @@ public class ProjectileController : MonoBehaviour
         {
             projectileManager.CreateImpactParticleAtPosition(position, rangeWeaponHandler);
         }
-        GameManager.Instance.objectPooling.ReleaseObject(this.gameObject);
+        GameManager.Instance.objectPooling.ReleaseObject(this.gameObject,rangeWeaponHandler.BulletIndex);
         //Destroy(this.gameObject);
     }
 

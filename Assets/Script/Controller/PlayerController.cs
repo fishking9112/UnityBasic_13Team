@@ -106,7 +106,9 @@ public class PlayerController : BaseController
 
             }
             nearestEnemy = min.Item2 == 100 ? null : hit[min.Item1].transform;
+            
         }
+
     }
 
     private void LookNearestEnemy()

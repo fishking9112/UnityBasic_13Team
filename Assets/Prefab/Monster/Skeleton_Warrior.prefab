@@ -468,8 +468,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0499827e136b2094490adf8e22e50bb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
-  speed: 3
+  baseHealth: 320
+  baseAttack: 30
+  baseDefense: 10
+  baseDamageReduction: 0.2
+  baseCriticalRate: 0.1
+  baseSpeed: 6
+  perkStatMultiplier: 75
+  nowHealth: 0
 --- !u!54 &735576941506032478
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -520,7 +526,6 @@ MonoBehaviour:
   isOnKnockback: 0
   knockbackPower: 0.1
   knockbackTime: 0.5
-  attackSoundClip: {fileID: 0}
 --- !u!136 &8158697653172118890
 CapsuleCollider:
   m_ObjectHideFlags: 0
