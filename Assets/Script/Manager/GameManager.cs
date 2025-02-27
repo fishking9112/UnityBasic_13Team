@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using GLTFast.Schema;
 using UnityEngine;
+using UnityEngine.UI; // UI 관련 네임스페이스 추가
+
+// Assets.Script.UI 네임스페이스 제거 (존재하지 않음)
 
 public class GameManager : MonoBehaviour
 {
@@ -49,10 +52,28 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // UI 매니저 초기화 - 타입 이름으로 직접 찾기
+        var uiManager = FindObjectOfType(System.Type.GetType("InGameUIManager"));
+        if (uiManager == null)
+        {
+            // 다른 방법으로 시도
+            var uiManagers = FindObjectsOfType<MonoBehaviour>();
+            foreach (var manager in uiManagers)
+            {
+                if (manager.GetType().Name == "InGameUIManager")
+                {
+                    uiManager = manager;
+                    break;
+                }
+            }
+            
+            if (uiManager == null)
+            {
+                Debug.LogWarning("InGameUIManager를 찾을 수 없습니다. UI가 제대로 작동하지 않을 수 있습니다.");
+            }
+        }
         player.Init(this);
     }
-
-
 
     public void OpenNextDungeon()
     {
