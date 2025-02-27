@@ -12,7 +12,7 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] List<Rect> spawnAreas;
     [SerializeField] private Color gizmoColor = new Color(1, 0, 0, 0.3f);
 
-    private List<EnemyController> activeEnemies = new List<EnemyController>();
+    public List<EnemyController> activeEnemies = new List<EnemyController>();
 
     private bool enemySpawnComplite;
 

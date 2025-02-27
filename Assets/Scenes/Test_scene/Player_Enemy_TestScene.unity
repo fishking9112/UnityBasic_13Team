@@ -636,8 +636,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4268209692039440719, guid: 68f87279133171941a27a7c5f96d425f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1203774430}
   m_SourcePrefab: {fileID: 100100000, guid: 68f87279133171941a27a7c5f96d425f, type: 3}
+--- !u!1 &924483997 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4963947748994546292, guid: 68f87279133171941a27a7c5f96d425f, type: 3}
+  m_PrefabInstance: {fileID: 805674275}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1003396517
 GameObject:
   m_ObjectHideFlags: 0
@@ -789,6 +797,25 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ac4f09b111896343ae0612d88abdafe, type: 3}
+--- !u!1 &1203774427 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4268209692039440719, guid: 68f87279133171941a27a7c5f96d425f, type: 3}
+  m_PrefabInstance: {fileID: 805674275}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1203774430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203774427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e433396df6815764c9400514b470314e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterSpawn: {fileID: 924483997}
+  enemyPrefabs: []
 --- !u!1 &1226652244
 GameObject:
   m_ObjectHideFlags: 0
@@ -1172,6 +1199,7 @@ MonoBehaviour:
   - {fileID: 1360514249974498181, guid: d90dd255c6a11f046ae96d0cded15153, type: 3}
   spawnAreas: []
   gizmoColor: {r: 1, g: 0, b: 0, a: 0.3}
+  activeEnemies: []
   timeBetweenSpawns: 0.2
   timeBetweenWaves: 1
 --- !u!1660057539 &9223372036854775807
