@@ -19,13 +19,17 @@ public class SoundManager : MonoBehaviour
     {
         instance = this;
         musicAudioSource = GetComponent<AudioSource>();
-        musicAudioSource.volume = musicVolume;
-        musicAudioSource.loop = true;
+        if(musicAudioSource != null)
+        {
+            musicAudioSource.volume = musicVolume;
+            musicAudioSource.loop = true;
+        }
     }
 
     private void Start()
     {
-        ChangeBackGroundMusic(musicClip);
+        if(musicClip != null)
+            ChangeBackGroundMusic(musicClip);
     }
 
     public void ChangeBackGroundMusic(AudioClip clip)
