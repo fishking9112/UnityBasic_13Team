@@ -170,6 +170,15 @@ public class GachaResultPanel : MonoBehaviour
     private void OnConfirmButtonClicked()
     {
         Debug.Log("확인 버튼 클릭됨");
+        
+        // 인벤토리 UI 새로고침 추가 (이중 안전장치)
+        var inventoryManager = FindObjectOfType<EquipmentInventoryManager>();
+        if (inventoryManager != null)
+        {
+            inventoryManager.RefreshInventory();
+            Debug.Log("GachaResultPanel에서 인벤토리 UI 새로고침 완료");
+        }
+        
         onConfirmClicked?.Invoke();
         gameObject.SetActive(false);
     }

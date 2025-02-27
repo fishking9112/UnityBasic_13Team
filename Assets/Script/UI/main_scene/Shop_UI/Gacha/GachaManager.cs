@@ -354,6 +354,25 @@ public class GachaManager : MonoBehaviour
         resultPanel.gameObject.SetActive(true);
         resultPanel.Initialize(items, () => {
             Debug.Log("결과 패널 닫힘");
+            
+            // 인벤토리 UI 새로고침 추가
+            if (equipmentInventoryManager != null)
+            {
+                equipmentInventoryManager.RefreshInventory();
+                Debug.Log("가챠 후 인벤토리 UI 새로고침 완료");
+            }
+            else
+            {
+                Debug.LogWarning("EquipmentInventoryManager 참조가 없어 인벤토리를 새로고침할 수 없습니다.");
+                
+                // 씬에서 EquipmentInventoryManager 찾기 시도
+                var inventoryManager = FindObjectOfType<EquipmentInventoryManager>();
+                if (inventoryManager != null)
+                {
+                    inventoryManager.RefreshInventory();
+                    Debug.Log("FindObjectOfType으로 인벤토리 UI 새로고침 완료");
+                }
+            }
         });
     }
     
