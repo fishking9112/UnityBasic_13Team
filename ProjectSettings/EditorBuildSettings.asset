@@ -9,22 +9,13 @@ EditorBuildSettings:
     path: Assets/Scenes/Test_scene/main_scene/Main_scene.unity
     guid: bb11b958ccc37f546945653d666865b8
   - enabled: 1
-    path: Assets/Scenes/Test_scene/Test_Dungeon_Scene.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
     path: Assets/Scenes/Test_scene/main_scene/Intro_Scene.unity
     guid: 458bd94eb54fb9742b1223c4d8160f53
   - enabled: 1
     path: Assets/Scenes/Test_scene/main_scene/Loading_scene.unity
     guid: 03aecf8454a90f1428b40c5abba7db17
   - enabled: 1
-    path: Assets/Scenes/Test_scene/MonsterTestScene.unity
-    guid: 296ff254f5be0674b8ba393314797491
-  - enabled: 1
-    path: Assets/Scenes/Test_scene/PlayerTestScene.unity
-    guid: 76568cc2d0be6a845b1f4010df05f831
-  - enabled: 1
-    path: Assets/Scenes/Test_scene/Test_Dungeon_UITest.unity
-    guid: 7ccdc3e8ed1d3cd44ac5d7fb17c47797
+    path: Assets/Scenes/Test_scene/Ver_0.1/Test_1.unity
+    guid: f6a5a8c8023b38547b26f634b441dcda
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 8095ad40c8a18774bb1435b623037ec1, type: 2}
