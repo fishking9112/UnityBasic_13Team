@@ -11,12 +11,9 @@ public class ProjectileManager : MonoBehaviour
 
     [SerializeField] private ParticleSystem impactParticleSystem;
 
-
-    private int specialAbility;
     private void Awake()
     {
         instance = this;
-        specialAbility = 0;
     }
 
     public void ShootBullet(RangeWeaponHandler rangeWeaponHandler,Vector3 startPosition, Vector3 direction)
