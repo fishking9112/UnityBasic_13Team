@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class RangeWeaponHandler : WeaponHandler
@@ -28,6 +29,8 @@ public class RangeWeaponHandler : WeaponHandler
     [SerializeField] private Color projectileColor;
     public Color ProjectileColor { get { return projectileColor; } }
 
+    public int specailAbility;
+
 
     private ProjectileManager projectileManager;
 
@@ -35,6 +38,7 @@ public class RangeWeaponHandler : WeaponHandler
     {
         base.Start();
         projectileManager = ProjectileManager.Instance;
+        specailAbility = 1;
     }
 
     public override void Attack()
@@ -64,11 +68,20 @@ public class RangeWeaponHandler : WeaponHandler
         return Quaternion.Euler(0, 0, degree) * v;
     }
 
-    // 화살 수 변화할 때 호출
-    public void SetProjectilePerShot(int count)
+    // 화살 능력 추가할 때 호출
+    public override void SetAbility(int index)
     {
-        numberofProjectilePerShot = count;
-        spread = (count - 1) * 10;
+        switch (index)
+        {
+            case 2:
+            case 4:
+                specailAbility += index;
+                break;
+            case 1:
+                numberofProjectilePerShot = 3;
+                break;
+
+        }
     }
 
 

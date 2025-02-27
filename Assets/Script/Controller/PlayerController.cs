@@ -146,4 +146,11 @@ public class PlayerController : BaseController
         }
     }
 
+
+    private void GetSpecialAbility(int index)
+    {
+        weaponHandler.SetAbility(index);
+        // 1=멀티샷 2=튕기는화살 3=폭발화살
+    }
+
 }
