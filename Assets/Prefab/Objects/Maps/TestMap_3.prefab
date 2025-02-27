@@ -16014,7 +16014,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9218325920732901981}
   m_Layer: 0
-  m_Name: Potal
+  m_Name: Portal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
