@@ -52,6 +52,14 @@ public class ProjectileController : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
+        // 이미 죽은 적인지 확인
+        EnemyController enemy = collision.GetComponent<EnemyController>();
+        if (enemy != null && enemy.IsDead())
+        {
+            // 이미 죽은 적이면 무시
+            return;
+        }
+        
         // 벽에 부딫힐 경우
         if (levelCollisionLayer.value == (levelCollisionLayer.value | (1 << collision.gameObject.layer)))
         {
