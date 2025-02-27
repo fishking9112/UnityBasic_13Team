@@ -8,8 +8,6 @@ public class GameManager : MonoBehaviour
 
     public PlayerController player { get; private set; }
 
-    [SerializeField] private int currentWaveIndex = 0;
-
     private EnemyManager enemyManager;
 
     public ObjectPooling objectPooling;
@@ -39,27 +37,10 @@ public class GameManager : MonoBehaviour
        
     }
 
-    public void StartGame()
+
+
+    public void OpenNextDungeon()
     {
-        //StartNextWave();
-        //Wave 형식 안쓸거임
+        mapObject.transform.Find("Trigger").gameObject.SetActive(true);
     }
-
-    void StartNextWave()
-    {
-        currentWaveIndex += 1;
-        enemyManager.StartWave(1 + currentWaveIndex / 5);
-    }
-
-    public void EndOfWave()
-    {
-        StartNextWave();
-    }
-
-    public void GameOver()
-    {
-        enemyManager.StopWave();
-    }
-
-
 }
