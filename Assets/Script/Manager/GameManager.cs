@@ -22,9 +22,7 @@ public class GameManager : MonoBehaviour
 
 
         enemyManager = GetComponentInChildren<EnemyManager>();
-        enemyManager.Init(this);
-
-
+        //enemyManager.Init(this);
     }
 
     private void Start()
@@ -34,7 +32,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        StartNextWave();
+        //StartNextWave();
+        //Wave 형식 안쓸거임
     }
 
     void StartNextWave()

@@ -26,7 +26,6 @@ public class BaseController : MonoBehaviour
     protected WeaponHandler weaponHandler;
 
     protected bool isAttacking;
-    private float timeSinceLastAttack = float.MaxValue;
 
     protected virtual void Awake()
     {
@@ -53,7 +52,6 @@ public class BaseController : MonoBehaviour
     {
         HandleAction();
         Rotate(lookDirection);
-        HandleAttackDelay();
     }
 
     protected virtual void FixedUpdate()
@@ -80,7 +78,7 @@ public class BaseController : MonoBehaviour
 
     private void Rotate(Vector3 direction)
     {
-        // È¸Àü°ª 0(ÀÔ·Â°ª ¾øÀ½)ÀÌ¸é ¹Ù²ÙÁö ¾ÊÀ½
+        // íšŒì „ê°’ 0(ì…ë ¥ê°’ ì—†ìŒ)ì´ë©´ ë°”ê¾¸ì§€ ì•ŠìŒ
         if (direction == Vector3.zero)
             return;
 
@@ -96,24 +94,6 @@ public class BaseController : MonoBehaviour
     }
 
 
-    private void HandleAttackDelay()
-    {
-        if (weaponHandler == null)
-            return;
-
-        if (timeSinceLastAttack <= weaponHandler.Delay)
-        {
-            timeSinceLastAttack += Time.deltaTime;
-        }
-
-        if (isAttacking && timeSinceLastAttack > weaponHandler.Delay)
-        {
-            timeSinceLastAttack = 0;
-            Attack();
-        }
-
-
-    }
 
     protected virtual void Attack()
     {
@@ -121,6 +101,7 @@ public class BaseController : MonoBehaviour
         {
             weaponHandler?.Attack();
             animationHandler.Attack();
+            isAttacking = false;
         }
     }
 

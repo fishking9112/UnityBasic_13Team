@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.Layouts;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -18,11 +19,16 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private float timeBetweenSpawns = 0.2f;
     [SerializeField] private float timeBetweenWaves = 1f;
 
-    public GameManager gameManager;
+    private GameManager gameManager;
 
-    public void Init(GameManager gameManager)
+    private void Awake()
     {
-        this.gameManager=gameManager;
+        gameManager = transform.parent.GetComponent<GameManager>();
+    }
+
+    private void Start()
+    {
+        SpawnEnemy(Vector3.zero);   
     }
 
     public void StartWave(int waveCount)
@@ -60,13 +66,29 @@ public class EnemyManager : MonoBehaviour
         enemySpawnComplite = true;
 
     }
+    private void SpawnEnemy(Vector3 spawnPos)
+    {
+        if (enemyPrefabs.Count == 0 /*|| spawnAreas.Count == 0*/)
+        {
+            Debug.LogWarning("Enemy Prefab ë˜ëŠ” Spawn Areaê°€ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
+            return;
+        }
 
+        GameObject randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
+
+        GameObject spawnEnemy = Instantiate(randomPrefab, spawnPos, Quaternion.identity); 
+        
+        EnemyController enemyController = spawnEnemy.GetComponent<EnemyController>();
+        enemyController.Init(this, gameManager.player.transform);
+
+        activeEnemies.Add(enemyController);
+    }
 
     private void SpawnRandomEnemy()
     {
         if(enemyPrefabs.Count==0 || spawnAreas.Count== 0)
         {
-            Debug.LogWarning("Enemy Prefab ¶Ç´Â Spawn Area°¡ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù.");
+            Debug.LogWarning("Enemy Prefab ë˜ëŠ” Spawn Areaê°€ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
             return;
         }
 

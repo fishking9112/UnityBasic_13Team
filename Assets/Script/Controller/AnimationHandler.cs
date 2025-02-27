@@ -24,6 +24,10 @@ public class AnimationHandler : MonoBehaviour
     {
         animator.SetBool(IsAttack, true);
     }
+    public void Attack(bool Attack)
+    {
+        animator.SetBool(IsAttack, Attack);
+    }
 
     public void Damage()
     {
