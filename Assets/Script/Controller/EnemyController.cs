@@ -12,6 +12,10 @@ public class EnemyController : BaseController
     [SerializeField] public float followRange = 15f;
     private float timeSinceLastAttack = float.MaxValue;
 
+    // 사망 이벤트 추가
+    public delegate void EnemyDeathHandler(EnemyController enemy);
+    public event EnemyDeathHandler OnEnemyDeath;
+
     protected override void Awake()
     {
         base.Awake();
@@ -140,6 +144,9 @@ public class EnemyController : BaseController
         }
         
         // 나머지 사망 처리는 TakeDamage에서 처리
+        
+        // 사망 이벤트 발생
+        OnEnemyDeath?.Invoke(this);
     }
 
     public override void Death()
@@ -216,6 +223,10 @@ public class EnemyController : BaseController
                 color.a = 0.3f;
                 renderer.color = color;
             }
+            
+            // 사망 이벤트 발생 - 여기서 명시적으로 호출
+            Debug.Log("몬스터 사망 이벤트 발생: " + gameObject.name);
+            OnEnemyDeath?.Invoke(this);
             
             // 더 빠른 파괴 (0.5초 -> 0.2초)
             Destroy(gameObject, 0.2f);
