@@ -7,12 +7,24 @@ using UnityEngine;
 namespace BackendData.GameData.QuestAchievement {
     
     //===============================================================
-    // WeaponInventory 테이블의 데이터를 관리하는 클래스
+    // QuestAchievement 테이블의 데이터를 관리하는 클래스
     //===============================================================
     public class Manager : Base.GameData {
         
         // QuestAchievement의 각 아이템을 담는 Dictionary
         private Dictionary<int, Item> _dictionary = new();
+        
+        // QuestData 클래스 정의
+        [Serializable]
+        public class QuestData {
+            public int id;
+            public string title;
+            public string description;
+            public bool isCompleted;
+        }
+        
+        // 퀘스트 데이터 리스트
+        private List<QuestData> _quests = new List<QuestData>();
 
         // 다른 클래스에서 Add, Delete등 수정이 불가능하도록 읽기 전용 Dictionary
         public IReadOnlyDictionary<int, Item> Dictionary => _dictionary;
@@ -24,11 +36,16 @@ namespace BackendData.GameData.QuestAchievement {
         
         // 데이터가 존재하지 않을 경우, 초기값 설정
         protected override void InitializeData() {
-            _dictionary.Clear();
-            // 초기 퀘스트 데이터 설정
-            for (int i = 1; i <= 10; i++) {  // 예시로 10개의 퀘스트 생성
-                _dictionary.Add(i, new Item(i, false));
-            }
+            // base.InitializeData() 호출 제거 (추상 메서드이므로 호출 불가)
+            
+            // 퀘스트 데이터 초기화
+            _quests = new List<QuestData>();
+            
+            // 기본 퀘스트 추가 (예시)
+            _quests.Add(new QuestData { id = 1, title = "첫 번째 퀘스트", description = "게임 시작하기", isCompleted = false });
+            _quests.Add(new QuestData { id = 2, title = "두 번째 퀘스트", description = "무기 획득하기", isCompleted = false });
+            
+            Debug.Log($"QuestAchievement 초기화 완료: {_quests.Count}개의 퀘스트 생성");
         }
         
         protected override Dictionary<string, object> GetSaveData() {

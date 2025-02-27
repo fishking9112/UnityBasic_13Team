@@ -1,0 +1,20 @@
+{
+  "rarities": [
+    {
+      "name": "normal",
+      "probability": 60
+    },
+    {
+      "name": "rare",
+      "probability": 30
+    },
+    {
+      "name": "epic",
+      "probability": 9
+    },
+    {
+      "name": "legendary",
+      "probability": 1
+    }
+  ]
+}
