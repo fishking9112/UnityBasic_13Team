@@ -21,6 +21,7 @@ public class EquipmentDetailPanel : MonoBehaviour
     private bool isEquipped;
     private int itemType;
     private EquipmentInventoryManager inventoryManager;
+    private StatHandler statHandler;
 
     private void Start()
     {
@@ -33,6 +34,9 @@ public class EquipmentDetailPanel : MonoBehaviour
         
         // 인벤토리 매니저 참조 가져오기
         inventoryManager = FindObjectOfType<EquipmentInventoryManager>();
+        
+        // StatHandler 참조 가져오기
+        statHandler = FindObjectOfType<StatHandler>();
     }
 
     // 패널 초기화 및 표시
