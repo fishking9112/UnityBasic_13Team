@@ -84,8 +84,6 @@ public class ProjectileController : MonoBehaviour
                 // 튕기는 화살이 아닐 경우, 튕김 횟수가 다 된 경우 파괴
                 DestroyProjectile(collision.ClosestPoint(transform.position) - direction * 0.2f, fxOnDestroy);
             }
-
-
         }
         // 타겟(적)에게 부딫힐 경우
         else if (rangeWeaponHandler.target.value == (rangeWeaponHandler.target.value | (1 << collision.gameObject.layer)))
@@ -101,16 +99,14 @@ public class ProjectileController : MonoBehaviour
                 // 폭발 아니면 그냥 파괴
                 DestroyProjectile(collision.ClosestPoint(transform.position), fxOnDestroy);
             }
-            // 상대 피격 처리 필요
-
+            
+            // 데미지 적용 전 로그 출력
+            Debug.Log($"투사체 데미지 적용: {rangeWeaponHandler.Power}");
+            
+            // 상대 피격 처리
             collision.GetComponent<BaseController>().TakeDamage(rangeWeaponHandler.Power);
-
-            // 혹시 데미지 표시 할거면 여기에서 호출하면 될듯?
-
         }
-
     }
-
 
     public void Init(Vector3 direction, RangeWeaponHandler weaponHandler, ProjectileManager projectileManager)
     {
@@ -122,6 +118,9 @@ public class ProjectileController : MonoBehaviour
         currentDuration = 0;
         transform.localScale = Vector3.one * weaponHandler.BulletSize;
         sp += rangeWeaponHandler.specailAbility;
+        
+        // 투사체 초기화 시 공격력 로그 출력
+        Debug.Log($"투사체 초기화: 공격력 {rangeWeaponHandler.Power}");
 
         isReady = true;
     }
@@ -135,8 +134,4 @@ public class ProjectileController : MonoBehaviour
         GameManager.Instance.objectPooling.ReleaseObject(this.gameObject,rangeWeaponHandler.BulletIndex);
         //Destroy(this.gameObject);
     }
-
-
-
-
 }

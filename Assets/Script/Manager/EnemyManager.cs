@@ -16,8 +16,10 @@ public class EnemyManager : MonoBehaviour
 
     private bool enemySpawnComplite;
 
+    #pragma warning disable 0414
     [SerializeField] private float timeBetweenSpawns = 0.2f;
     [SerializeField] private float timeBetweenWaves = 1f;
+    #pragma warning restore 0414
 
     private GameManager gameManager;
     private void Awake()
@@ -55,7 +57,20 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    private void SpawnWave()
+    {
+        StartCoroutine(SpawnEnemiesWithDelay());
+    }
 
-
-
+    private IEnumerator SpawnEnemiesWithDelay()
+    {
+        Debug.Log($"적 웨이브 생성: 스폰 간격 {timeBetweenSpawns}초, 웨이브 간격 {timeBetweenWaves}초");
+        
+        for (int i = 0; i < 5; i++)
+        {
+            yield return new WaitForSeconds(timeBetweenSpawns);
+        }
+        
+        yield return new WaitForSeconds(timeBetweenWaves);
+    }
 }

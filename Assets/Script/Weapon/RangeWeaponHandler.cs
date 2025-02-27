@@ -39,11 +39,28 @@ public class RangeWeaponHandler : WeaponHandler
         base.Start();
         projectileManager = ProjectileManager.Instance;
         specailAbility = 1;
-        Power = Controller.GetPower();
+        
+        // 플레이어의 공격력을 직접 가져오기
+        if (Controller is PlayerController)
+        {
+            Power = InGamePlayerManager.Instance.Attack;
+            Debug.Log($"무기 공격력 설정: {Power} (플레이어 공격력 적용)");
+        }
+        else
+        {
+            Power = Controller.GetPower();
+            Debug.Log($"무기 공격력 설정: {Power} (컨트롤러에서 가져옴)");
+        }
     }
 
     public override void Attack()
     {
+        // 플레이어 무기인 경우 공격 시 공격력 업데이트
+        if (Controller is PlayerController)
+        {
+            Power = InGamePlayerManager.Instance.Attack;
+        }
+        
         base.Attack();
 
         float projectileAngleSpace = multipleProjectileAngle;

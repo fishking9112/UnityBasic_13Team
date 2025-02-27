@@ -49,9 +49,17 @@ public class InGamePlayerManager : MonoBehaviour
     public delegate void HealthChangedHandler(int currentHealth, int maxHealth);
     public event HealthChangedHandler OnHealthChanged;
 
+    // 스탯 변경 이벤트 추가
+    public delegate void StatsChangedHandler();
+    public event StatsChangedHandler OnStatsChanged;
+
     [Header("디버그")]
     [SerializeField] private bool _debugMode = false;
     [SerializeField] private string _lastActionLog = "";
+    
+    // 테스트용 데미지 필드 추가
+    [Header("테스트")]
+    [SerializeField] private int _testDamageAmount = 10;
 
     private void Awake()
     {
@@ -138,6 +146,9 @@ public class InGamePlayerManager : MonoBehaviour
             _lastActionLog = $"플레이어 스탯 로드 완료: 체력 {_maxHealth}, 공격력 {_attack}, 방어력 {_defense}";
             Debug.Log(_lastActionLog);
         }
+        
+        // 스탯 변경 이벤트 발생
+        OnStatsChanged?.Invoke();
     }
 
     /// <summary>
@@ -208,6 +219,12 @@ public class InGamePlayerManager : MonoBehaviour
         
         // 체력 변경 이벤트 발생
         OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
+        
+        // 사망 처리
+        if (_currentHealth <= 0)
+        {
+            Die();
+        }
         
         // 사망 여부 반환
         return _currentHealth <= 0;
@@ -327,5 +344,32 @@ public class InGamePlayerManager : MonoBehaviour
     private void DebugDamage()
     {
         TakeDamage(10);
+    }
+
+    // 테스트용 데미지 메서드 추가
+    [ContextMenu("플레이어에게 테스트 데미지 주기")]
+    public void ApplyTestDamage()
+    {
+        TakeDamage(_testDamageAmount);
+        Debug.Log($"테스트 데미지 적용: {_testDamageAmount}");
+    }
+    
+    // 에디터에서 버튼으로 사용할 메서드 추가
+    public void ApplyDamage5()
+    {
+        TakeDamage(5);
+        Debug.Log("테스트 데미지 적용: 5");
+    }
+    
+    public void ApplyDamage10()
+    {
+        TakeDamage(10);
+        Debug.Log("테스트 데미지 적용: 10");
+    }
+    
+    public void ApplyDamage50()
+    {
+        TakeDamage(50);
+        Debug.Log("테스트 데미지 적용: 50");
     }
 } 
