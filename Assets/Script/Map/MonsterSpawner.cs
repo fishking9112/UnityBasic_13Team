@@ -22,8 +22,8 @@ public class MonsterSpawner : MonoBehaviour
 
     private void Awake()
     {
-        gameManager = GetComponent<GameManager>();
-        enemyManager = GetComponent<EnemyManager>();
+        gameManager = FindObjectOfType<GameManager>();
+        enemyManager = FindObjectOfType<EnemyManager>();
     }
     // Start is called before the first frame update
     void Start()

@@ -27,7 +27,7 @@ public class EnemyManager : MonoBehaviour
 
     private void Start()
     {
-        SpawnEnemy(Vector3.zero);   
+        //SpawnEnemy(Vector3.zero);   
     }
 
     public void StartWave(int waveCount)
