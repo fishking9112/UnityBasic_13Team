@@ -2445,8 +2445,7 @@ GameObject:
   - component: {fileID: 6484105569863706307}
   - component: {fileID: 8589087841596970790}
   - component: {fileID: 3970560842821472658}
-  - component: {fileID: 8292023857297286512}
-  - component: {fileID: 7578366510080604563}
+  - component: {fileID: 5108448614027882768}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -2613,7 +2612,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &8292023857297286512
+--- !u!114 &5108448614027882768
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2641,24 +2640,10 @@ MonoBehaviour:
   bulletSize: 1
   duration: 10
   spread: 0
-  numberofProjectilePerShot: 2
+  numberofProjectilePerShot: 1
   multipleProjectileAngle: 30
   projectileColor: {r: 0, g: 0, b: 0, a: 0}
   specailAbility: 0
---- !u!114 &7578366510080604563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8417932051331860232}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 367aed1054056214d9d31e18eca38f1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  healthBarPrefab: {fileID: 5731763679641179642, guid: 9a91cc28f8446db4289b7167caf2d9a8, type: 3}
-  offset: {x: 0, y: 2, z: 0}
 --- !u!1 &8462157522768744104
 GameObject:
   m_ObjectHideFlags: 0

@@ -147,7 +147,6 @@ GameObject:
   - component: {fileID: 2130582000264274992}
   - component: {fileID: 3392777904782377678}
   - component: {fileID: 5735151357600764512}
-  - component: {fileID: 720192288552226705}
   - component: {fileID: 7786086151761450089}
   - component: {fileID: 4525705317967123533}
   - component: {fileID: 3056343583574310515}
@@ -222,25 +221,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16223e4623b2e504cb3240eb9b3be327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &720192288552226705
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1377174716797380439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0499827e136b2094490adf8e22e50bb3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  baseHealth: 100
-  baseAttack: 10
-  baseDefense: 5
-  baseDamageReduction: 0.1
-  baseCriticalRate: 0.05
-  baseSpeed: 3
-  perkStatMultiplier: 75
 --- !u!54 &7786086151761450089
 Rigidbody:
   m_ObjectHideFlags: 0
