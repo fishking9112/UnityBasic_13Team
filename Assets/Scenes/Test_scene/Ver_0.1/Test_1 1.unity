@@ -341,6 +341,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 166632067}
   m_CullTransparentMesh: 1
+--- !u!1001 &274101669
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1470149974317742622, guid: 7b829ae5bcc5cf0429b6dcd0d699f006, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470149974317742622, guid: 7b829ae5bcc5cf0429b6dcd0d699f006, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470149974317742622, guid: 7b829ae5bcc5cf0429b6dcd0d699f006, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470149974317742622, guid: 7b829ae5bcc5cf0429b6dcd0d699f006, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470149974317742622, guid: 7b829ae5bcc5cf0429b6dcd0d699f006, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470149974317742622, guid: 7b829ae5bcc5cf0429b6dcd0d699f006, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470149974317742622, guid: 7b829ae5bcc5cf0429b6dcd0d699f006, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470149974317742622, guid: 7b829ae5bcc5cf0429b6dcd0d699f006, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470149974317742622, guid: 7b829ae5bcc5cf0429b6dcd0d699f006, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470149974317742622, guid: 7b829ae5bcc5cf0429b6dcd0d699f006, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8417932051331860232, guid: 7b829ae5bcc5cf0429b6dcd0d699f006, type: 3}
+      propertyPath: m_Name
+      value: Player 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7b829ae5bcc5cf0429b6dcd0d699f006, type: 3}
 --- !u!1 &280482810
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,6 +542,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectPooling: {fileID: 1226652246}
   mapObject: {fileID: 0}
+  doorIsOpen: 0
 --- !u!4 &511777068
 Transform:
   m_ObjectHideFlags: 0
@@ -513,12 +571,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 511777066}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c2360ec64bdf034c9f6b84d2c9540bd, type: 3}
+  m_Script: {fileID: 11500000, guid: dded97fc758b41c48b5b505f4f92bba9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  criticalDamageMultiplier: 1.5
-  damageVariance: 0.1
-  playerManager: {fileID: 0}
+  _maxHealth: 0
+  _currentHealth: 0
+  _attack: 0
+  _defense: 0
+  _damageReduction: 0
+  _criticalRate: 0
+  _moveSpeed: 0
+  _debugMode: 0
+  _lastActionLog: 
 --- !u!1001 &561248887
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -549,7 +613,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1811364241860205271, guid: 8444dc1622f49c448aac3e26976ed78e, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2543496980561222148, guid: 8444dc1622f49c448aac3e26976ed78e, type: 3}
       propertyPath: m_AnchorMax.y
@@ -729,7 +793,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5783928445436295804, guid: 8444dc1622f49c448aac3e26976ed78e, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6628819282924070229, guid: 8444dc1622f49c448aac3e26976ed78e, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1545,3 +1609,4 @@ SceneRoots:
   - {fileID: 511777068}
   - {fileID: 561248887}
   - {fileID: 2036468467}
+  - {fileID: 274101669}
