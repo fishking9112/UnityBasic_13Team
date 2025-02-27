@@ -127,7 +127,7 @@ public class ProjectileController : MonoBehaviour
     }
 
 
-    // 특수효과 얻을 때 호출
+    // 특수효과 얻을 때 호출 2=튕기는 화살 / 4=폭발 화살
     public void AddSpecialEffect(int index)
     {
         sp += index;
