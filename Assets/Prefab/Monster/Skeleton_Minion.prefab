@@ -10,6 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 394720740931713606}
   - component: {fileID: 5078473154600916181}
+  - component: {fileID: -2829085561646179971}
+  - component: {fileID: -8216644816726915434}
+  - component: {fileID: -8835335394351509009}
+  - component: {fileID: 2383441151477775847}
+  - component: {fileID: -7907351264940957946}
   m_Layer: 0
   m_Name: Skeleton_Minion
   m_TagString: Untagged
@@ -54,6 +59,106 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-2829085561646179971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147780376288778718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40bdfffea374f7c4f938a16037b5d26c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WeaponPrefab: {fileID: 0}
+  enumState: 0
+  followRange: 15
+--- !u!114 &-8216644816726915434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147780376288778718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16223e4623b2e504cb3240eb9b3be327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!54 &-8835335394351509009
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147780376288778718}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 84
+  m_CollisionDetection: 0
+--- !u!114 &2383441151477775847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147780376288778718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77be683b93666584bb24c043e6c85c16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  delay: 0
+  weaponSize: 1
+  power: 1
+  speed: 1
+  attackRange: 10
+  target:
+    serializedVersion: 2
+    m_Bits: 0
+  isOnKnockback: 0
+  knockbackPower: 0.1
+  knockbackTime: 0.5
+--- !u!136 &-7907351264940957946
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147780376288778718}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2.23399
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.1226472, z: 0}
 --- !u!1 &170950046280946075
 GameObject:
   m_ObjectHideFlags: 0
