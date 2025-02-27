@@ -66,10 +66,9 @@ public class WeaponHandler : MonoBehaviour
     {
 
     }
-    public virtual void Rotate(bool isLeft)
+
+    public virtual void SetAbility(int count)
     {
-        weaponRenderer.flipY = isLeft;
+
     }
-
-
 }
