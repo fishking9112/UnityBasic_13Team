@@ -17,9 +17,6 @@ public class MonsterSpawner : MonoBehaviour
 
     [SerializeField] private List<GameObject> enemyPrefabs;
 
-
-    private List<Vector3> enemySpawnPos = new List<Vector3>();
-
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
@@ -49,9 +46,9 @@ public class MonsterSpawner : MonoBehaviour
 
     private void SpawnEnemy(Vector3 spawnPos)
     {
-        if (enemyPrefabs.Count == 0 /*|| spawnAreas.Count == 0*/)
+        if (enemyPrefabs.Count == 0 )
         {
-            Debug.LogWarning("Enemy Prefab 또는 Spawn Area가 설정되지 않았습니다.");
+            Debug.LogWarning("Enemy Prefab 가 설정되지 않았습니다.");
             return;
         }
 
