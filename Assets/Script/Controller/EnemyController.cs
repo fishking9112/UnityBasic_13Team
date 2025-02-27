@@ -7,12 +7,22 @@ public class EnemyController : BaseController
     private EnemyManager enemyManager;
     private Transform target;
 
-    [SerializeField] private float followRange = 15f;
+    [SerializeField] public float followRange = 15f;
+    private float timeSinceLastAttack = float.MaxValue;
+
+
+
 
     public void Init(EnemyManager enemyManager,Transform target)
     {
         this.enemyManager = enemyManager;
         this.target = target;
+    }
+    protected override void Update()
+    {
+        base.Update();
+
+        HandleAttackDelay();
     }
 
     protected float DistanceToTarget()
@@ -20,7 +30,7 @@ public class EnemyController : BaseController
         return Vector3.Distance(transform.position, target.position);
     }
 
-    protected Vector2 DirectionToTarget()
+    protected Vector3 DirectionToTarget()
     {
         return (target.position - transform.position).normalized;
     }
@@ -29,42 +39,39 @@ public class EnemyController : BaseController
     {
         base.HandleAction();
 
+
         if(weaponHandler==null || target==null)
         {
-            if (!movementDirection.Equals(Vector2.zero))
-                movementDirection = Vector2.zero;
+            if (!movementDirection.Equals(Vector3.zero))
+                movementDirection = Vector3.zero;
             return;
         }
 
         float distance = DistanceToTarget();
-        Vector2 direction = DirectionToTarget();
+        Vector3 direction = DirectionToTarget();
 
-        isAttacking = false;
+        //isAttacking = false;
 
-        if(distance<=followRange)
+        if(distance <= followRange)
         {
             lookDirection = direction;
 
-            if(distance<weaponHandler.AttackRange)
+            if (distance < weaponHandler.AttackRange && isAttacking == false)
             {
-                int layerMaskTarget = weaponHandler.target;
-                RaycastHit2D hit = Physics2D.Raycast(transform.position, direction,
-                    weaponHandler.AttackRange*1.5f,
-                    (1<<LayerMask.NameToLayer("Level"))|layerMaskTarget);
-
-                if(hit.collider!=null&& layerMaskTarget==(layerMaskTarget|(1<<hit.collider.gameObject.layer)))
-                {
-                    isAttacking = true;
-                }
+                Debug.Log("Att !! ");
+                isAttacking = true;
 
                 movementDirection = Vector2.zero;
+
                 return;
+            }
+            else
+            {
+                animationHandler.Attack(false);
             }
 
             movementDirection = direction;
         }
-
-
     }
 
 
@@ -72,6 +79,25 @@ public class EnemyController : BaseController
     {
         base.Death();
         enemyManager.RemoveEnemyOnDeath(this);
+    }
+
+    private void HandleAttackDelay()
+    {
+        if (weaponHandler == null)
+            return;
+
+        if (timeSinceLastAttack <= weaponHandler.Delay)
+        {
+            timeSinceLastAttack += Time.deltaTime;
+        }
+
+        if (isAttacking && timeSinceLastAttack > weaponHandler.Delay)
+        {
+            timeSinceLastAttack = 0;
+            Attack();
+        }
+
+
     }
 
 

@@ -6,11 +6,18 @@ public class BaseController : MonoBehaviour
 {
     protected Rigidbody _rigidbody;
 
+    //[SerializeField] private SpriteRenderer CharacterRenderer;
+    //[SerializeField] private SkinnedMeshRenderer CharacterRenderer;
+    //[SerializeField] private Transform weaponPivot;
+
     protected Vector3 movementDirection = Vector3.zero;
     public Vector3 MovementDirection { get { return movementDirection; } }
 
     protected Vector3 lookDirection = Vector3.zero;
     public Vector3 LookDirection { get { return lookDirection; } }
+
+    private Vector3 knockback = Vector3.zero;
+    private float knockbackDuration = 0.0f;
 
     protected AnimationHandler animationHandler;
     protected StatHandler statHandler;
@@ -19,7 +26,6 @@ public class BaseController : MonoBehaviour
     protected WeaponHandler weaponHandler;
 
     protected bool isAttacking;
-    private float timeSinceLastAttack = float.MaxValue;
 
     protected virtual void Awake()
     {
@@ -27,7 +33,14 @@ public class BaseController : MonoBehaviour
         animationHandler = GetComponent<AnimationHandler>();
         statHandler = GetComponent<StatHandler>();
 
+        //if (WeaponPrefab != null)
+        //{
+        //    weaponHandler = Instantiate(WeaponPrefab, weaponPivot);
+        //}
+        //else
+        //{
         weaponHandler = GetComponentInChildren<WeaponHandler>();
+        //}
     }
 
     protected virtual void Start()
@@ -39,13 +52,16 @@ public class BaseController : MonoBehaviour
     {
         HandleAction();
         Rotate(lookDirection);
-        HandleAttackDelay();
     }
 
     protected virtual void FixedUpdate()
     {
         MoveMent(MovementDirection);
 
+        if (knockbackDuration > 0.0f)
+        {
+            knockbackDuration -= Time.fixedDeltaTime;
+        }
     }
     protected virtual void HandleAction()
     {
@@ -68,27 +84,16 @@ public class BaseController : MonoBehaviour
 
         float rotZ = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
 
-        _rigidbody.rotation = Quaternion.Euler(0f, rotZ, 0f);
+        _rigidbody.rotation= Quaternion.Euler(0f, rotZ,0f );
     }
 
-    private void HandleAttackDelay()
+    public void Applyknockback(Transform other, float power, float duration)
     {
-        if (weaponHandler == null)
-            return;
-
-        if (timeSinceLastAttack <= weaponHandler.Delay)
-        {
-            timeSinceLastAttack += Time.deltaTime;
-        }
-
-        if (isAttacking && timeSinceLastAttack > weaponHandler.Delay)
-        {
-            timeSinceLastAttack = 0;
-            Attack();
-        }
-
-
+        knockbackDuration = duration;
+        knockback = -(other.position - transform.position).normalized * power;
     }
+
+
 
     protected virtual void Attack()
     {
@@ -96,6 +101,7 @@ public class BaseController : MonoBehaviour
         {
             weaponHandler?.Attack();
             animationHandler.Attack();
+            isAttacking = false;
         }
     }
 
