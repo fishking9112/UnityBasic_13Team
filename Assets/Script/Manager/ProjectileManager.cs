@@ -22,7 +22,7 @@ public class ProjectileManager : MonoBehaviour
 
         float rotZ = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
 
-        GameObject obj = GameManager.Instance.objectPooling.GetObject();
+        GameObject obj = GameManager.Instance.objectPooling.GetObject(rangeWeaponHandler.BulletIndex);
         obj.transform.position = startPosition;
         obj.transform.rotation = Quaternion.Euler(0, rotZ, 0);
 

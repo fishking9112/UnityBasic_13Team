@@ -47,6 +47,8 @@ public class EnemyManager : MonoBehaviour
     {
         activeEnemies.Remove(enemy);
 
+        Debug.Log("남은 " + enemy.name + " : " + activeEnemies.Count);
+
         if(activeEnemies.Count==0)
         {
             gameManager.OpenNextDungeon();
