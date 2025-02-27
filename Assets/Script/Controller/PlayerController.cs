@@ -19,6 +19,11 @@ public class PlayerController : BaseController
     public AudioClip attackSoundClip;
 
     private InGamePlayerManager playerManager;
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
