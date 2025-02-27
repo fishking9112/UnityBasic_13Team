@@ -703,6 +703,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentWaveIndex: 0
   objectPooling: {fileID: 0}
+  mapObject: {fileID: 0}
 --- !u!4 &511777068
 Transform:
   m_ObjectHideFlags: 0
@@ -2114,6 +2115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WeaponPrefab: {fileID: 0}
   isBattle: 1
+  attackSoundClip: {fileID: 8300000, guid: ab44045295b7ff748a0c9535bacc0505, type: 3}
 --- !u!4 &706522727879683616
 Transform:
   m_ObjectHideFlags: 0

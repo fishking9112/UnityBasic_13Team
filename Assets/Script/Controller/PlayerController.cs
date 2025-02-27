@@ -15,6 +15,8 @@ public class PlayerController : BaseController
 
     public bool isBattle;
 
+    public AudioClip attackSoundClip;
+
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
@@ -131,6 +133,11 @@ public class PlayerController : BaseController
             // 발사
             enumState = State.Attack;
             Attack();
+
+            if (attackSoundClip != null)
+            {
+                SoundManager.PlayClip(attackSoundClip);
+            }
         }
     }
 
