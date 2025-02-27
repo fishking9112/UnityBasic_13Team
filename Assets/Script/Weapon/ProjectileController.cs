@@ -102,16 +102,16 @@ public class ProjectileController : MonoBehaviour
     }
 
 
-    public void Init(Vector3 direction,RangeWeaponHandler weaponHandler, ProjectileManager projectileManager)
+    public void Init(Vector3 direction, RangeWeaponHandler weaponHandler, ProjectileManager projectileManager)
     {
         this.projectileManager = projectileManager;
-
+        
         rangeWeaponHandler = weaponHandler;
 
         this.direction = direction;
         currentDuration = 0;
         transform.localScale = Vector3.one * weaponHandler.BulletSize;
-
+        sp += rangeWeaponHandler.specailAbility;
 
         isReady = true;
     }
@@ -127,10 +127,6 @@ public class ProjectileController : MonoBehaviour
     }
 
 
-    // 특수효과 얻을 때 호출 2=튕기는 화살 / 4=폭발 화살
-    public void AddSpecialEffect(int index)
-    {
-        sp += index;
-    }
+
 
 }

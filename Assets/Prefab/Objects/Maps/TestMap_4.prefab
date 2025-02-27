@@ -2697,6 +2697,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1084739466654562233}
   - component: {fileID: 6399930261982064279}
+  - component: {fileID: 5162913340323721781}
   m_Layer: 0
   m_Name: TestMap_4
   m_TagString: Map
@@ -2736,6 +2737,21 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 1
+--- !u!114 &5162913340323721781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2407688237230542863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e433396df6815764c9400514b470314e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterSpawn: {fileID: 5799692419273584852}
+  enemyPrefabs:
+  - {fileID: 147780376288778718, guid: 626ff242169f96f4bbd86440ca0932b8, type: 3}
 --- !u!1 &2425524013125015527
 GameObject:
   m_ObjectHideFlags: 0

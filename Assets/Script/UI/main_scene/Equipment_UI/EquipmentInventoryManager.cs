@@ -503,10 +503,13 @@ public class EquipmentInventoryManager : MonoBehaviour
     // 인벤토리 새로고침 메소드 (외부에서 호출 가능)
     public void RefreshInventory()
     {
-        // UI만 다시 생성 (데이터는 다시 로드하지 않음)
+        // 인벤토리 데이터 다시 로드
+        LoadInventoryData();
+        
+        // UI만 다시 생성
         GenerateInventoryUI();
         
-        Debug.Log("인벤토리 UI가 새로고침되었습니다.");
+        Debug.Log("인벤토리 데이터 및 UI가 새로고침되었습니다.");
     }
 
     // 파일 권한 확인 메소드

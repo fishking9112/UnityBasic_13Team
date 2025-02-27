@@ -5,7 +5,7 @@ using UnityEngine;
 public class WeaponHandler : MonoBehaviour
 {
     [Header("Attack Info")]
-    [SerializeField] private float delay = 1f;
+    [SerializeField] private float delay;
 
     public float Delay { get => delay; set => delay = value; }
 
@@ -66,10 +66,9 @@ public class WeaponHandler : MonoBehaviour
     {
 
     }
-    public virtual void Rotate(bool isLeft)
+
+    public virtual void SetAbility(int count)
     {
-        weaponRenderer.flipY = isLeft;
+
     }
-
-
 }

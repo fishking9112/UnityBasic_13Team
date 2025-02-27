@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerController : BaseController
 {
@@ -62,17 +63,21 @@ public class PlayerController : BaseController
 
     private void OnMove(InputValue value)
     {
-        Vector2 v=value.Get<Vector2>();
-
-        if (v == Vector2.zero)
-            enumState = State.Idle;
-        else
-            enumState = State.Move;
-
+        Vector2 v = value.Get<Vector2>();
 
         Vector3 v3 = new Vector3(v.x, 0, v.y);
         movementDirection = v3;
         lookDirection = v3;
+
+        if (v == Vector2.zero)
+        {
+            enumState = State.Idle;
+            _rigidbody.velocity = movementDirection;
+            animationHandler.Move(movementDirection);
+        }
+        else
+            enumState = State.Move;
+
     }
 
 
@@ -114,7 +119,19 @@ public class PlayerController : BaseController
         }
         else
         {
-            lookDirection = (nearestEnemy.position - transform.position).normalized;
+            Vector3 target2DPos = nearestEnemy.position;
+            target2DPos.y = 0f;
+            Vector3 transform2DPos = transform.position;
+            transform2DPos.y = 0f;
+
+            lookDirection = (target2DPos - transform2DPos).normalized;
+
+            //lookDirection = (nearestEnemy.position - transform.position).normalized;
+
+            /*
+             * 3D 좌표계로 방향벡터를 구했을 때 , Y 위치값에 따라 방향벡터의 Y값이 달라 질 수 있어서
+             * Y값을 0으로 만든 뒤 , 노말벡터를 만들어 방향벡터를 구해준다.
+             */
         }
     }
 
@@ -127,11 +144,12 @@ public class PlayerController : BaseController
     {
         while(true)
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(weaponHandler.Delay);
             yield return new WaitWhile(() => nearestEnemy==null);
             yield return new WaitUntil(() => movementDirection == Vector3.zero);
             // 발사
             enumState = State.Attack;
+            LookNearestEnemy();
             Attack();
 
             if (attackSoundClip != null)
@@ -139,6 +157,13 @@ public class PlayerController : BaseController
                 SoundManager.PlayClip(attackSoundClip);
             }
         }
+    }
+
+
+    private void GetSpecialAbility(int index)
+    {
+        weaponHandler.SetAbility(index);
+        // 1=멀티샷 2=튕기는화살 3=폭발화살
     }
 
 }

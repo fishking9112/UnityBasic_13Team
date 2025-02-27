@@ -642,6 +642,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8069907996890506962}
   - component: {fileID: 4770362238795877302}
+  - component: {fileID: 5187894913159474593}
   m_Layer: 0
   m_Name: TestMap_2
   m_TagString: Map
@@ -680,6 +681,21 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 1
+--- !u!114 &5187894913159474593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4268209692039440719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e433396df6815764c9400514b470314e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterSpawn: {fileID: 4963947748994546292}
+  enemyPrefabs:
+  - {fileID: 147780376288778718, guid: 626ff242169f96f4bbd86440ca0932b8, type: 3}
 --- !u!1 &4963947748994546292
 GameObject:
   m_ObjectHideFlags: 0
@@ -773,7 +789,7 @@ Transform:
   m_GameObject: {fileID: 8489782277559678335}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: 6, z: -5}
+  m_LocalPosition: {x: -1, y: 0, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
