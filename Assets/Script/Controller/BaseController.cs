@@ -79,10 +79,7 @@ public class BaseController : MonoBehaviour
                 break;
             case State.Dead:
                 break;
-
-
         }
-
     }
     protected virtual void HandleAction()
     {
