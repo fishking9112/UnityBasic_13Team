@@ -1972,6 +1972,7 @@ MonoBehaviour:
   baseCriticalRate: 0.05
   baseSpeed: 3
   perkStatMultiplier: 75
+  nowHealth: 0
 --- !u!54 &7313033366581454957
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2011,10 +2012,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b46c5e8d4ce0f8b47945070da0e4a4c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delay: 0
+  delay: 1
   weaponSize: 1
   power: 1
-  speed: 1
+  speed: 3
   attackRange: 10
   target:
     serializedVersion: 2
@@ -2022,15 +2023,15 @@ MonoBehaviour:
   isOnKnockback: 0
   knockbackPower: 0.1
   knockbackTime: 0.5
-  projectileSpawnPosition: {fileID: 0}
-  bulletIndex: 0
-  bulletSize: 1
-  duration: 0
+  projectileSpawnPosition: {fileID: 6153297577216672306}
+  bulletIndex: 1
+  bulletSize: 0.5
+  duration: 5
   spread: 0
   numberofProjectilePerShot: 1
   multipleProjectileAngle: 0
   projectileColor: {r: 0, g: 0, b: 0, a: 0}
-  specailAbility: 0
+  specailAbility: 1
 --- !u!136 &2657891648302974830
 CapsuleCollider:
   m_ObjectHideFlags: 0

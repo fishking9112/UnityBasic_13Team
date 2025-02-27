@@ -106,7 +106,9 @@ public class PlayerController : BaseController
 
             }
             nearestEnemy = min.Item2 == 100 ? null : hit[min.Item1].transform;
+            
         }
+
     }
 
     private void LookNearestEnemy()
@@ -172,6 +174,28 @@ public class PlayerController : BaseController
     {
         base.TakeDamage(changed);
 
-        playerManager.TakeDamage((int)changed);
+        playerManager.TakeDamage(Mathf.RoundToInt(changed));
+        
+        if (enumState != State.Dead)
+        {
+            animationHandler.Damage();
+        }
+    }
+
+    private void SubscribeToPlayerDeath()
+    {
+        playerManager.OnHealthChanged += (current, max) => {
+            if (current <= 0 && enumState != State.Dead)
+            {
+                enumState = State.Dead;
+                animationHandler.Dead();
+            }
+        };
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        SubscribeToPlayerDeath();
     }
 }

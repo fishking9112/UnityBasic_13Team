@@ -7,15 +7,35 @@ public class EnemyController : BaseController
 {
     private EnemyManager enemyManager;
     private Transform target;
+    private EnemyStatsHandler statsHandler;
 
     [SerializeField] public float followRange = 15f;
     private float timeSinceLastAttack = float.MaxValue;
 
-    public void Init(EnemyManager enemyManager,Transform target)
+    protected override void Awake()
+    {
+        base.Awake();
+        
+        // statsHandler가 없으면 추가
+        statsHandler = GetComponent<EnemyStatsHandler>();
+        if (statsHandler == null)
+        {
+            Debug.LogWarning("EnemyStatsHandler not found on " + gameObject.name + ". Adding one.");
+            statsHandler = gameObject.AddComponent<EnemyStatsHandler>();
+        }
+        
+        if (statsHandler != null)
+        {
+            statsHandler.OnEnemyDeath += HandleDeath;
+        }
+    }
+
+    public void Init(EnemyManager enemyManager, Transform target)
     {
         this.enemyManager = enemyManager;
         this.target = target;
     }
+
     protected override void Update()
     {
         base.Update();
@@ -105,11 +125,26 @@ public class EnemyController : BaseController
         }
     }
 
+    private void HandleDeath(EnemyController enemy)
+    {
+        // 이미 Dead 상태면 중복 처리 방지
+        if (enumState == State.Dead)
+            return;
+        
+        enumState = State.Dead;
+        
+        // 즉시 EnemyManager에 알림
+        if (enemyManager != null)
+        {
+            enemyManager.RemoveEnemyOnDeath(this);
+        }
+        
+        // 나머지 사망 처리는 TakeDamage에서 처리
+    }
 
     public override void Death()
     {
-        base.Death();
-        enemyManager.RemoveEnemyOnDeath(this);
+        // 이제 HandleDeath에서 처리
     }
 
     private void HandleAttackDelay()
@@ -151,13 +186,49 @@ public class EnemyController : BaseController
     {
         base.TakeDamage(changed);
 
-        bool isDead = statHandler.ChangeHealth(statHandler.CalculateDamaged((int)changed));
+        if (statsHandler == null)
+        {
+            Debug.LogError("statsHandler is null on " + gameObject.name);
+            return;
+        }
+
+        bool isDead = statsHandler.TakeDamage(Mathf.RoundToInt(changed));
 
         if (isDead)
         {
-            Death();
+            // 즉시 사망 처리
             animationHandler.Dead();
-            Destroy(gameObject, 0.5f);
+            
+            // 즉시 처리할 부분
+            _rigidbody.velocity = Vector3.zero;
+            
+            // 콜라이더 비활성화 (있다면)
+            Collider[] colliders = GetComponentsInChildren<Collider>();
+            foreach (Collider col in colliders)
+            {
+                col.enabled = false;
+            }
+            
+            // 투명도 변경
+            foreach (SpriteRenderer renderer in transform.GetComponentsInChildren<SpriteRenderer>())
+            {
+                Color color = renderer.color;
+                color.a = 0.3f;
+                renderer.color = color;
+            }
+            
+            // 더 빠른 파괴 (0.5초 -> 0.2초)
+            Destroy(gameObject, 0.2f);
         }
+    }
+
+    public float GetMoveSpeed()
+    {
+        return statsHandler != null ? statsHandler.MoveSpeed : 3f;
+    }
+
+    public bool IsDead()
+    {
+        return enumState == State.Dead;
     }
 }

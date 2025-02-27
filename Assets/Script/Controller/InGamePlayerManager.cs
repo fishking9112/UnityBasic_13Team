@@ -26,14 +26,15 @@ public class InGamePlayerManager : MonoBehaviour
     // 스탯 참조
     private TotalStatsReader statsReader;
 
-    // 현재 스탯 값
-    private int _maxHealth;
-    private int _currentHealth;
-    private int _attack;
-    private int _defense;
-    private float _damageReduction;
-    private float _criticalRate;
-    private float _moveSpeed;
+    // 현재 스탯 값 - 인스펙터에서 볼 수 있도록 [SerializeField] 추가
+    [Header("현재 스탯 (읽기 전용)")]
+    [SerializeField] private int _maxHealth;
+    [SerializeField] private int _currentHealth;
+    [SerializeField] private int _attack;
+    [SerializeField] private int _defense;
+    [SerializeField] private float _damageReduction;
+    [SerializeField] private float _criticalRate;
+    [SerializeField] private float _moveSpeed;
 
     // 스탯 프로퍼티
     public int MaxHealth => _maxHealth;
@@ -48,6 +49,10 @@ public class InGamePlayerManager : MonoBehaviour
     public delegate void HealthChangedHandler(int currentHealth, int maxHealth);
     public event HealthChangedHandler OnHealthChanged;
 
+    [Header("디버그")]
+    [SerializeField] private bool _debugMode = false;
+    [SerializeField] private string _lastActionLog = "";
+
     private void Awake()
     {
         // 싱글톤 설정
@@ -59,6 +64,33 @@ public class InGamePlayerManager : MonoBehaviour
 
         _instance = this;
         DontDestroyOnLoad(gameObject);
+
+        // TotalStatsReader 초기화
+        statsReader = new TotalStatsReader();
+        
+        // 스탯 초기화
+        InitializeStats();
+    }
+
+    /// <summary>
+    /// 초기 스탯을 설정합니다.
+    /// </summary>
+    private void InitializeStats()
+    {
+        // 기본 스탯 설정 (나중에 TotalStatsReader에서 로드)
+        _maxHealth = 100;
+        _currentHealth = 100;
+        _attack = 10;
+        _defense = 5;
+        _damageReduction = 0.1f;
+        _criticalRate = 0.05f;
+        _moveSpeed = 5f;
+        
+        if (_debugMode)
+        {
+            _lastActionLog = "스탯 초기화 완료";
+            Debug.Log(_lastActionLog);
+        }
     }
 
     private void Start()
@@ -91,7 +123,11 @@ public class InGamePlayerManager : MonoBehaviour
         // 현재 체력 초기화 (게임 시작 시 최대 체력으로 설정)
         _currentHealth = _maxHealth;
 
-        Debug.Log($"플레이어 스탯 로드 완료: 체력 {_maxHealth}, 공격력 {_attack}, 방어력 {_defense}");
+        if (_debugMode)
+        {
+            _lastActionLog = $"플레이어 스탯 로드 완료: 체력 {_maxHealth}, 공격력 {_attack}, 방어력 {_defense}";
+            Debug.Log(_lastActionLog);
+        }
     }
 
     /// <summary>
@@ -107,7 +143,12 @@ public class InGamePlayerManager : MonoBehaviour
         if (previousHealth != _currentHealth)
         {
             OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
-            Debug.Log($"플레이어 체력 변경: {previousHealth} -> {_currentHealth}");
+            
+            if (_debugMode)
+            {
+                _lastActionLog = $"플레이어 체력 변경: {previousHealth} -> {_currentHealth}";
+                Debug.Log(_lastActionLog);
+            }
             // UI에 플레이어 체력 반영할 자리
         }
 
@@ -119,24 +160,47 @@ public class InGamePlayerManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 데미지를 받습니다. 방어력과 방어율이 적용됩니다.
+    /// 데미지를 계산합니다. 방어력과 방어율이 적용됩니다.
     /// </summary>
-    /// <param name="damage">받을 데미지</param>
-    public void TakeDamage(int damage)
+    /// <param name="incomingDamage">받을 원래 데미지</param>
+    /// <returns>방어력과 방어율이 적용된 최종 데미지</returns>
+    private int CalculateDamage(int incomingDamage)
     {
         // 방어력으로 데미지 감소
-        int reducedDamage = Mathf.Max(1, damage - _defense);
+        int reducedDamage = Mathf.Max(1, incomingDamage - _defense);
         
         // 방어율로 데미지 추가 감소
         reducedDamage = Mathf.RoundToInt(reducedDamage * (1f - _damageReduction));
         
         // 최소 1의 데미지는 입도록 설정
-        reducedDamage = Mathf.Max(1, reducedDamage);
+        return Mathf.Max(1, reducedDamage);
+    }
+
+    /// <summary>
+    /// 데미지를 받습니다.
+    /// </summary>
+    /// <param name="damage">받을 데미지</param>
+    /// <returns>사망 여부</returns>
+    public bool TakeDamage(int damage)
+    {
+        // 데미지 계산 (방어력 적용)
+        int finalDamage = CalculateDamage(damage);
         
         // 체력 감소
-        ChangeHealth(-reducedDamage);
+        _currentHealth = Mathf.Max(0, _currentHealth - finalDamage);
         
-        Debug.Log($"플레이어가 데미지를 받음: 원래 데미지 {damage}, 감소된 데미지 {reducedDamage}");
+        // 디버그 로그
+        if (_debugMode)
+        {
+            _lastActionLog = $"데미지 받음: {damage} -> 최종 {finalDamage}, 남은 체력: {_currentHealth}/{_maxHealth}";
+            Debug.Log(_lastActionLog);
+        }
+        
+        // 체력 변경 이벤트 발생
+        OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
+        
+        // 사망 여부 반환
+        return _currentHealth <= 0;
     }
 
     /// <summary>
@@ -208,7 +272,11 @@ public class InGamePlayerManager : MonoBehaviour
         // 체력 변경 이벤트 발생
         OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
         
-        Debug.Log("플레이어 스탯 새로고침 완료");
+        if (_debugMode)
+        {
+            _lastActionLog = "플레이어 스탯 새로고침 완료";
+            Debug.Log(_lastActionLog);
+        }
     }
 
     /// <summary>
@@ -222,5 +290,21 @@ public class InGamePlayerManager : MonoBehaviour
                $"방어율: {_damageReduction * 100:F1}%\n" +
                $"크리티컬율: {_criticalRate * 100:F1}%\n" +
                $"이동속도: {_moveSpeed:F1}";
+    }
+
+    // 디버그용 메서드 추가
+    [ContextMenu("체력 회복")]
+    private void DebugHeal()
+    {
+        _currentHealth = _maxHealth;
+        OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
+        _lastActionLog = "체력 완전 회복";
+        Debug.Log(_lastActionLog);
+    }
+
+    [ContextMenu("데미지 테스트 (10)")]
+    private void DebugDamage()
+    {
+        TakeDamage(10);
     }
 } 

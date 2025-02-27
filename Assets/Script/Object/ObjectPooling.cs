@@ -50,7 +50,60 @@ public class ObjectPooling : MonoBehaviour
     {
         Destroy(obj);
     }
-    public GameObject GetObject()
+    public GameObject GetObject(int bulletIndex)
+    {
+
+        switch (bulletIndex)
+        {
+            case 0:
+                return GetPlayerObj();
+            case 1:
+                return GetEnemyObj();
+            default:
+                return null;
+        }
+       
+    
+    }
+    public void ReleaseObject(GameObject obj, int bulletIndex)
+    {
+        switch (bulletIndex)
+        {
+            case 0:
+                ReleasePlayerObj(obj);
+                break;
+            case 1:
+                ReleaseEnemyObj(obj);
+                break;
+            default:
+                break;
+        }
+        
+    }
+
+    private void ReleasePlayerObj(GameObject obj)
+    {
+        if (obj.CompareTag("PoolOverObj"))
+        {
+            Destroy(obj);
+        }
+        else
+        {
+            playerPool.Release(obj);
+        }
+    }
+    private void ReleaseEnemyObj(GameObject obj)
+    {
+        if (obj.CompareTag("PoolOverObj"))
+        {
+            Destroy(obj);
+        }
+        else
+        {
+            enemyPool.Release(obj);
+        }
+    }
+    private GameObject GetPlayerObj()
     {
         GameObject sel = null;
 
@@ -64,19 +117,24 @@ public class ObjectPooling : MonoBehaviour
         {
             sel = playerPool.Get();
         }
-
         return sel;
+
     }
-    public void ReleaseObject(GameObject obj)
+    private GameObject GetEnemyObj()
     {
-        if (obj.CompareTag("PoolOverObj"))
+        GameObject sel = null;
+
+        // maxSize를 넘는다면 임시 객체 생성 및 반환
+        if (enemyPool.CountActive >= enemyMaxValue)
         {
-            Destroy(obj);
+            sel = CreateObject();
+            sel.tag = "PoolOverObj";
         }
         else
         {
-            playerPool.Release(obj);
+            sel = enemyPool.Get();
         }
-    }
+        return sel;
 
+    }
 }

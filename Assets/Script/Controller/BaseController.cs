@@ -22,7 +22,6 @@ public class BaseController : MonoBehaviour
     public Vector3 LookDirection { get { return lookDirection; } }
 
     protected AnimationHandler animationHandler;
-    protected StatHandler statHandler;
 
     [SerializeField] public WeaponHandler WeaponPrefab;
     protected WeaponHandler weaponHandler;
@@ -36,7 +35,6 @@ public class BaseController : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
         animationHandler = GetComponent<AnimationHandler>();
-        statHandler = GetComponent<StatHandler>();
 
         weaponHandler = GetComponentInChildren<WeaponHandler>();
     }
@@ -88,7 +86,18 @@ public class BaseController : MonoBehaviour
 
     private void MoveMent(Vector3 direction)
     {
-        direction = direction * statHandler.Speed;
+        float moveSpeed = 3f;
+        
+        if (this is PlayerController)
+        {
+            moveSpeed = InGamePlayerManager.Instance.MoveSpeed;
+        }
+        else if (this is EnemyController)
+        {
+            moveSpeed = ((EnemyController)this).GetMoveSpeed();
+        }
+        
+        direction = direction * moveSpeed;
        
         _rigidbody.velocity = direction;
         animationHandler.Move(direction);
@@ -96,7 +105,6 @@ public class BaseController : MonoBehaviour
 
     private void Rotate(Vector3 direction)
     {
-        // 회전값 0(입력값 없음)이면 바꾸지 않음
         if (direction == Vector3.zero)
             return;
 
@@ -143,9 +151,18 @@ public class BaseController : MonoBehaviour
 
     }
 
-    public int GetPower()
+    public virtual int GetPower()
     {
-        return statHandler.Attack;
+        if (this is PlayerController)
+        {
+            return InGamePlayerManager.Instance.Attack;
+        }
+        else if (this is EnemyController && GetComponent<EnemyStatsHandler>() != null)
+        {
+            return GetComponent<EnemyStatsHandler>().Attack;
+        }
+        
+        return 10;
     }
 
 }
