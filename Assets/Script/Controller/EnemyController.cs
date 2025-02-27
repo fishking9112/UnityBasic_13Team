@@ -155,6 +155,7 @@ public class EnemyController : BaseController
 
         if (isDead)
         {
+            Death();
             animationHandler.Dead();
             Destroy(gameObject, 0.5f);
         }
