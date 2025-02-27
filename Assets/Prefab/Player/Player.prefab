@@ -2503,6 +2503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponPrefab: {fileID: 0}
+  attackSoundClip: {fileID: 8300000, guid: ab44045295b7ff748a0c9535bacc0505, type: 3}
   isBattle: 1
 --- !u!114 &8673341397675803124
 MonoBehaviour:
@@ -2763,7 +2764,6 @@ MonoBehaviour:
   isOnKnockback: 0
   knockbackPower: 0.1
   knockbackTime: 0.5
-  attackSoundClip: {fileID: 0}
   projectileSpawnPosition: {fileID: 1696921852866634540}
   bulletIndex: 0
   bulletSize: 1

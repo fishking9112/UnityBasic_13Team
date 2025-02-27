@@ -12,7 +12,11 @@ public class GameManager : MonoBehaviour
 
     private EnemyManager enemyManager;
 
+    public ObjectPooling objectPooling;
+
     public static bool isFirstLoading = true;
+
+    public GameObject mapObject;
 
     private void Awake()
     {
@@ -20,11 +24,14 @@ public class GameManager : MonoBehaviour
         player = FindObjectOfType<PlayerController>();
         player.Init(this);
 
-
         enemyManager = GetComponentInChildren<EnemyManager>();
-        enemyManager.Init(this);
 
+        objectPooling = GetComponentInChildren<ObjectPooling>();
 
+        mapObject = GameObject.FindGameObjectWithTag("Map");
+
+        //플레이어 초기 위치 정보 가져오기
+        player.transform.position = mapObject.transform.Find("PlayerSpawn").position;
     }
 
     private void Start()
@@ -34,7 +41,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        StartNextWave();
+        //StartNextWave();
+        //Wave 형식 안쓸거임
     }
 
     void StartNextWave()

@@ -15,6 +15,8 @@ public class PlayerController : BaseController
 
     public bool isBattle;
 
+    public AudioClip attackSoundClip;
+
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
@@ -60,10 +62,21 @@ public class PlayerController : BaseController
 
     private void OnMove(InputValue value)
     {
-        Vector2 v=value.Get<Vector2>();
+        Vector2 v = value.Get<Vector2>();
+
         Vector3 v3 = new Vector3(v.x, 0, v.y);
         movementDirection = v3;
         lookDirection = v3;
+
+        if (v == Vector2.zero)
+        {
+            enumState = State.Idle;
+            _rigidbody.velocity = movementDirection;
+            animationHandler.Move(movementDirection);
+        }
+        else
+            enumState = State.Move;
+
     }
 
 
@@ -98,15 +111,14 @@ public class PlayerController : BaseController
         if (nearestEnemy == null)
             return;
 
-        lookDirection = (nearestEnemy.position - transform.position);
 
-        if (lookDirection.magnitude < .9f)
+        if (movementDirection.magnitude > .9f)
         {
-            lookDirection = Vector3.zero;
+            lookDirection = movementDirection; ;
         }
         else
         {
-            lookDirection = lookDirection.normalized;
+            lookDirection = (nearestEnemy.position - transform.position).normalized;
         }
     }
 
@@ -119,12 +131,26 @@ public class PlayerController : BaseController
     {
         while(true)
         {
+            yield return new WaitForSeconds(weaponHandler.Delay);
             yield return new WaitWhile(() => nearestEnemy==null);
             yield return new WaitUntil(() => movementDirection == Vector3.zero);
-            yield return new WaitForSeconds(1);
             // 발사
+            enumState = State.Attack;
+            LookNearestEnemy();
             Attack();
+
+            if (attackSoundClip != null)
+            {
+                SoundManager.PlayClip(attackSoundClip);
+            }
         }
+    }
+
+
+    private void GetSpecialAbility(int index)
+    {
+        weaponHandler.SetAbility(index);
+        // 1=멀티샷 2=튕기는화살 3=폭발화살
     }
 
 }

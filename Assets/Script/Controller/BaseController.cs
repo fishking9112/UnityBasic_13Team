@@ -1,23 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.InputSystem.InputControlExtensions;
 
 public class BaseController : MonoBehaviour
 {
-    protected Rigidbody _rigidbody;
+    protected enum State
+    {
+        Move,
+        Attack,
+        Idle,
+        Dead
+    }
 
-    //[SerializeField] private SpriteRenderer CharacterRenderer;
-    //[SerializeField] private SkinnedMeshRenderer CharacterRenderer;
-    //[SerializeField] private Transform weaponPivot;
+    protected Rigidbody _rigidbody;
 
     protected Vector3 movementDirection = Vector3.zero;
     public Vector3 MovementDirection { get { return movementDirection; } }
 
     protected Vector3 lookDirection = Vector3.zero;
     public Vector3 LookDirection { get { return lookDirection; } }
-
-    private Vector3 knockback = Vector3.zero;
-    private float knockbackDuration = 0.0f;
 
     protected AnimationHandler animationHandler;
     protected StatHandler statHandler;
@@ -26,7 +28,9 @@ public class BaseController : MonoBehaviour
     protected WeaponHandler weaponHandler;
 
     protected bool isAttacking;
-    private float timeSinceLastAttack = float.MaxValue;
+
+    [SerializeField]
+    protected State enumState;
 
     protected virtual void Awake()
     {
@@ -34,36 +38,51 @@ public class BaseController : MonoBehaviour
         animationHandler = GetComponent<AnimationHandler>();
         statHandler = GetComponent<StatHandler>();
 
-        //if (WeaponPrefab != null)
-        //{
-        //    weaponHandler = Instantiate(WeaponPrefab, weaponPivot);
-        //}
-        //else
-        //{
         weaponHandler = GetComponentInChildren<WeaponHandler>();
-        //}
     }
 
     protected virtual void Start()
     {
-
+        enumState = State.Idle;
     }
 
     protected virtual void Update()
     {
-        HandleAction();
-        Rotate(lookDirection);
-        HandleAttackDelay();
+        switch (enumState)
+        {
+            case State.Idle:
+
+                break;
+            case State.Move:
+                Rotate(lookDirection);
+                break;
+            case State.Attack:
+                Rotate(lookDirection);
+                HandleAction();
+                break;
+            case State.Dead:
+                break;
+        }
     }
 
     protected virtual void FixedUpdate()
     {
-        MoveMent(MovementDirection);
-
-        if (knockbackDuration > 0.0f)
+        switch (enumState)
         {
-            knockbackDuration -= Time.fixedDeltaTime;
+            case State.Idle:
+
+                break;
+            case State.Move:
+                MoveMent(MovementDirection);
+                break;
+            case State.Attack:
+                break;
+            case State.Dead:
+                break;
+
+
         }
+
     }
     protected virtual void HandleAction()
     {
@@ -80,7 +99,7 @@ public class BaseController : MonoBehaviour
 
     private void Rotate(Vector3 direction)
     {
-        // »∏¿¸∞™ 0(¿‘∑¬∞™ æ¯¿Ω)¿Ã∏È πŸ≤Ÿ¡ˆ æ ¿Ω
+        // ÌöåÏ†ÑÍ∞í 0(ÏûÖÎ†•Í∞í ÏóÜÏùå)Ïù¥Î©¥ Î∞îÍæ∏ÏßÄ ÏïäÏùå
         if (direction == Vector3.zero)
             return;
 
@@ -89,31 +108,6 @@ public class BaseController : MonoBehaviour
         _rigidbody.rotation= Quaternion.Euler(0f, rotZ,0f );
     }
 
-    public void Applyknockback(Transform other, float power, float duration)
-    {
-        knockbackDuration = duration;
-        knockback = -(other.position - transform.position).normalized * power;
-    }
-
-
-    private void HandleAttackDelay()
-    {
-        if (weaponHandler == null)
-            return;
-
-        if (timeSinceLastAttack <= weaponHandler.Delay)
-        {
-            timeSinceLastAttack += Time.deltaTime;
-        }
-
-        if (isAttacking && timeSinceLastAttack > weaponHandler.Delay)
-        {
-            timeSinceLastAttack = 0;
-            Attack();
-        }
-
-
-    }
 
     protected virtual void Attack()
     {
@@ -121,6 +115,7 @@ public class BaseController : MonoBehaviour
         {
             weaponHandler?.Attack();
             animationHandler.Attack();
+            isAttacking = false;
         }
     }
 
