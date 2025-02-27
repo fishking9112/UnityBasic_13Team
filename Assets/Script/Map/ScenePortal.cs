@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ScenePortal : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class ScenePortal : MonoBehaviour
 
     private void Awake()
     {
-        gameSceneManager = GetComponent<GameSceneManager>();
+        gameSceneManager = GameObject.Find("GameSceneManager").GetComponent<GameSceneManager>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -18,6 +19,8 @@ public class ScenePortal : MonoBehaviour
         if ( other.transform.CompareTag("Player"))
         {
             Debug.Log("Player Enter");
+
+            gameSceneManager.LoadNextScene();
         }
     }
 }
