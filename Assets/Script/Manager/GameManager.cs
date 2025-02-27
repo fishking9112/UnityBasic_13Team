@@ -19,6 +19,9 @@ public class GameManager : MonoBehaviour
 
     public bool doorIsOpen = false;
 
+    [SerializeField] private GameObject portalObject; // Inspector에서 할당 가능
+    [SerializeField] private GameObject portalTrigger; // Inspector에서 할당 가능
+
     private void Awake()
     {
         Instance = this;
@@ -44,6 +47,27 @@ public class GameManager : MonoBehaviour
 
         // 문 단속
         doorIsOpen = false;
+
+        // 포탈 참조 찾기 (Inspector에서 할당하지 않은 경우)
+        if (portalObject == null)
+        {
+            portalObject = GameObject.Find("Potal"); // 또는 "Portal"
+            
+            if (portalObject != null && portalTrigger == null)
+            {
+                Transform triggerTransform = portalObject.transform.Find("PotalTrigger");
+                if (triggerTransform != null)
+                {
+                    portalTrigger = triggerTransform.gameObject;
+                }
+            }
+        }
+        
+        // 포탈 트리거 비활성화
+        if (portalTrigger != null)
+        {
+            portalTrigger.SetActive(false);
+        }
     }
 
     private void Start()
@@ -58,10 +82,18 @@ public class GameManager : MonoBehaviour
         if (!doorIsOpen)
         {
             doorIsOpen = true;
-
+            
             Debug.Log("OpenNextDungeon !");
-
-            GameObject.Find("Potal").transform.Find("PotalTrigger").gameObject.SetActive(true);
+            
+            // 저장된 참조 사용
+            if (portalTrigger != null)
+            {
+                portalTrigger.SetActive(true);
+            }
+            else
+            {
+                Debug.LogWarning("포탈 트리거 참조가 없습니다. 씬에 'Potal/PotalTrigger' 오브젝트가 존재하는지 확인하세요.");
+            }
         }
     }
 }

@@ -65,9 +65,6 @@ public class InGamePlayerManager : MonoBehaviour
         _instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // TotalStatsReader 초기화
-        statsReader = new TotalStatsReader();
-        
         // 스탯 초기화
         InitializeStats();
     }
@@ -99,7 +96,14 @@ public class InGamePlayerManager : MonoBehaviour
         statsReader = TotalStatsReader.Instance;
         
         // 초기 스탯 로드
-        LoadStats();
+        if (statsReader != null)
+        {
+            LoadStats();
+        }
+        else
+        {
+            Debug.LogError("TotalStatsReader 인스턴스를 찾을 수 없습니다.");
+        }
     }
 
     /// <summary>
@@ -110,6 +114,12 @@ public class InGamePlayerManager : MonoBehaviour
         if (statsReader == null)
         {
             statsReader = TotalStatsReader.Instance;
+            
+            if (statsReader == null)
+            {
+                Debug.LogError("TotalStatsReader 인스턴스를 찾을 수 없습니다.");
+                return;
+            }
         }
 
         // 스탯 로드
@@ -244,6 +254,17 @@ public class InGamePlayerManager : MonoBehaviour
     /// </summary>
     public void RefreshStats()
     {
+        if (statsReader == null)
+        {
+            statsReader = TotalStatsReader.Instance;
+            
+            if (statsReader == null)
+            {
+                Debug.LogError("TotalStatsReader 인스턴스를 찾을 수 없습니다.");
+                return;
+            }
+        }
+        
         // TotalStatsReader에서 스탯 새로고침
         statsReader.RefreshStats();
         
