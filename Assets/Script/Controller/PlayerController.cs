@@ -62,17 +62,21 @@ public class PlayerController : BaseController
 
     private void OnMove(InputValue value)
     {
-        Vector2 v=value.Get<Vector2>();
-
-        if (v == Vector2.zero)
-            enumState = State.Idle;
-        else
-            enumState = State.Move;
-
+        Vector2 v = value.Get<Vector2>();
 
         Vector3 v3 = new Vector3(v.x, 0, v.y);
         movementDirection = v3;
         lookDirection = v3;
+
+        if (v == Vector2.zero)
+        {
+            enumState = State.Idle;
+            _rigidbody.velocity = movementDirection;
+            animationHandler.Move(movementDirection);
+        }
+        else
+            enumState = State.Move;
+
     }
 
 
@@ -127,11 +131,12 @@ public class PlayerController : BaseController
     {
         while(true)
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(weaponHandler.Delay);
             yield return new WaitWhile(() => nearestEnemy==null);
             yield return new WaitUntil(() => movementDirection == Vector3.zero);
             // 발사
             enumState = State.Attack;
+            LookNearestEnemy();
             Attack();
 
             if (attackSoundClip != null)

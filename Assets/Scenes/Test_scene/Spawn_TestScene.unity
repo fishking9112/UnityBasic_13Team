@@ -483,8 +483,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentWaveIndex: 0
-  objectPooling: {fileID: 0}
-  mapObject: {fileID: 0}
+  objectPooling: {fileID: 1226652246}
+  mapObject: {fileID: 924871691}
 --- !u!4 &511777068
 Transform:
   m_ObjectHideFlags: 0
@@ -638,6 +638,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 68f87279133171941a27a7c5f96d425f, type: 3}
+--- !u!1 &924871691 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4268209692039440719, guid: 68f87279133171941a27a7c5f96d425f, type: 3}
+  m_PrefabInstance: {fileID: 805674275}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1003396517
 GameObject:
   m_ObjectHideFlags: 0
@@ -780,9 +785,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6484105569863706307, guid: 0ac4f09b111896343ae0612d88abdafe, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1820006260}
+    - target: {fileID: 7591085323082717667, guid: 0ac4f09b111896343ae0612d88abdafe, type: 3}
+      propertyPath: speed
+      value: 8.1
+      objectReference: {fileID: 0}
     - target: {fileID: 8417932051331860232, guid: 0ac4f09b111896343ae0612d88abdafe, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8589087841596970790, guid: 0ac4f09b111896343ae0612d88abdafe, type: 3}
+      propertyPath: m_Constraints
+      value: 84
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
