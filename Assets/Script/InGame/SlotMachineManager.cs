@@ -24,6 +24,12 @@ public class SlotMachineMgr : MonoBehaviour
     int ItemCnt = 3;
     int[] answer = { 2, 3, 1 };
 
+    // 슬롯 머신 완료 이벤트 선언
+    public delegate void SlotMachineCompletedHandler();
+    public event SlotMachineCompletedHandler OnSlotMachineCompleted;
+
+    private int completedSlots = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -70,9 +76,18 @@ public class SlotMachineMgr : MonoBehaviour
             }
             yield return new WaitForSeconds(0.02f);
         }
-        for (int i = 0; i < ItemCnt; i++)
+        
+        // 각 슬롯 버튼 활성화
+        Slot[SlotIndex].interactable = true;
+        
+        // 완료된 슬롯 수 증가
+        completedSlots++;
+        
+        // 모든 슬롯이 완료되었는지 확인
+        if (completedSlots >= Slot.Length)
         {
-            Slot[i].interactable = true;
+            // 이벤트 발생
+            OnSlotMachineCompleted?.Invoke();
         }
     }
 
