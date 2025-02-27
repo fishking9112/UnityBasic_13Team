@@ -1335,6 +1335,7 @@ GameObject:
   - component: {fileID: 2480287458384791293}
   - component: {fileID: -7651310068220526670}
   - component: {fileID: -2260213101462862094}
+  - component: {fileID: 7311515735716288705}
   m_Layer: 0
   m_Name: Skeleton_Rogue
   m_TagString: Untagged
@@ -1479,6 +1480,20 @@ CapsuleCollider:
   m_Height: 2.2754395
   m_Direction: 1
   m_Center: {x: 0, y: 1.1276909, z: 0}
+--- !u!114 &7311515735716288705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4487200812806315151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0499827e136b2094490adf8e22e50bb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 10
+  speed: 3
 --- !u!1 &4677493998059034005
 GameObject:
   m_ObjectHideFlags: 0

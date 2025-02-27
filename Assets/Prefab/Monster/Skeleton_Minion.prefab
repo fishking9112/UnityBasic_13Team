@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: -8835335394351509009}
   - component: {fileID: 2383441151477775847}
   - component: {fileID: -7907351264940957946}
+  - component: {fileID: 5003515147056527968}
   m_Layer: 0
   m_Name: Skeleton_Minion
   m_TagString: Untagged
@@ -159,6 +160,20 @@ CapsuleCollider:
   m_Height: 2.23399
   m_Direction: 1
   m_Center: {x: 0, y: 1.1226472, z: 0}
+--- !u!114 &5003515147056527968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147780376288778718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0499827e136b2094490adf8e22e50bb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 10
+  speed: 3
 --- !u!1 &170950046280946075
 GameObject:
   m_ObjectHideFlags: 0
