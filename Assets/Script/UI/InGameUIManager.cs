@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class InGameUIManager : MonoBehaviour
 {
@@ -13,9 +14,12 @@ public class InGameUIManager : MonoBehaviour
         {
             if (_instance == null)
             {
-                GameObject go = new GameObject("InGameUIManager");
-                _instance = go.AddComponent<InGameUIManager>();
-                DontDestroyOnLoad(go);
+                _instance = FindObjectOfType<InGameUIManager>();
+                
+                if (_instance == null)
+                {
+                    Debug.LogError("씬에 InGameUIManager가 없습니다!");
+                }
             }
             return _instance;
         }
@@ -50,15 +54,24 @@ public class InGameUIManager : MonoBehaviour
 
     private void Awake()
     {
-        // 싱글톤 설정
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
             return;
         }
-
+        
         _instance = this;
-        DontDestroyOnLoad(gameObject);
+
+        // UI 컴포넌트 참조 확인
+        if (pauseButton == null)
+        {
+            Debug.LogError("InGameUIManager: pauseButton이 Inspector에서 할당되지 않았습니다!");
+        }
+        
+        if (pausePanel == null)
+        {
+            Debug.LogError("InGameUIManager: pausePanel이 Inspector에서 할당되지 않았습니다!");
+        }
 
         // 플레이어 매니저 참조 가져오기
         playerManager = InGamePlayerManager.Instance;
@@ -74,24 +87,23 @@ public class InGameUIManager : MonoBehaviour
 
     private void Start()
     {
-        // UI 초기화
-        InitializeUI();
+        // 기존 코드...
         
-        // 이벤트 리스너 등록 - 명시적으로 버튼 이벤트 연결
-        if (pauseButton != null)
+        // 게임 시간 강제 정상화
+        Time.timeScale = 1f;
+        Debug.Log($"Start 메서드에서 Time.timeScale 강제 설정: {Time.timeScale}");
+        
+        // 일시정지 상태 초기화
+        isPaused = false;
+        
+        // 일시정지 패널 강제 비활성화
+        if (pausePanel != null)
         {
-            // 기존 리스너 제거 후 다시 추가
-            pauseButton.onClick.RemoveAllListeners();
-            pauseButton.onClick.AddListener(TogglePause);
-            Debug.Log("일시정지 버튼 이벤트 연결 완료");
-        }
-        else
-        {
-            Debug.LogError("일시정지 버튼 참조가 없습니다!");
+            pausePanel.SetActive(false);
+            Debug.Log("Start 메서드에서 일시정지 패널 강제 비활성화");
         }
         
-        // 몬스터 사망 이벤트 구독
-        RegisterAllEnemies();
+        // 기존 코드...
     }
 
     private void InitializeUI()
@@ -119,6 +131,44 @@ public class InGameUIManager : MonoBehaviour
         if (pausePanel != null)
         {
             pausePanel.SetActive(false);
+        }
+    }
+
+    private void SetupButtonListeners()
+    {
+        if (pauseButton != null)
+        {
+            // 기존 리스너 제거 후 다시 추가
+            pauseButton.onClick.RemoveAllListeners();
+            pauseButton.onClick.AddListener(TogglePause);
+            
+            // 버튼이 상호작용 가능한지 확인
+            if (!pauseButton.interactable)
+            {
+                pauseButton.interactable = true;
+                Debug.Log("일시정지 버튼 interactable 속성을 true로 설정했습니다.");
+            }
+            
+            Debug.Log("일시정지 버튼 이벤트 연결 완료");
+        }
+        else
+        {
+            Debug.LogError("일시정지 버튼 참조가 없습니다! Inspector에서 할당해주세요.");
+        }
+    }
+
+    private void CheckEventSystem()
+    {
+        // EventSystem 확인
+        if (FindObjectOfType<UnityEngine.EventSystems.EventSystem>() == null)
+        {
+            Debug.LogError("씬에 EventSystem이 없습니다! UI 이벤트가 작동하지 않을 수 있습니다.");
+            
+            // EventSystem 자동 생성 (선택사항)
+            GameObject eventSystem = new GameObject("EventSystem");
+            eventSystem.AddComponent<UnityEngine.EventSystems.EventSystem>();
+            eventSystem.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+            Debug.Log("EventSystem을 자동으로 생성했습니다.");
         }
     }
 
@@ -286,7 +336,7 @@ public class InGameUIManager : MonoBehaviour
         TogglePause();
     }
 
-    // Update 메서드에 키보드 입력 추가
+    // Update 메서드 수정
     private void Update()
     {
         // 주기적으로 적 이벤트 연결 확인
@@ -297,11 +347,39 @@ public class InGameUIManager : MonoBehaviour
             RegisterAllEnemies();
         }
         
-        // ESC 키로 일시정지 토글 (디버그용)
-        if (Input.GetKeyDown(KeyCode.Escape))
+        // Input System 오류 방지를 위한 조건부 실행
+        try
         {
-            Debug.Log("ESC 키 입력 감지 - 일시정지 토글");
-            TogglePause();
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                Debug.Log("ESC 키 입력 감지 - 일시정지 토글");
+                TogglePause();
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Input System 오류: {e.Message}");
+            
+            // 레거시 입력 시스템으로 폴백
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Debug.Log("레거시 입력 시스템: ESC 키 입력 감지");
+                TogglePause();
+            }
+        }
+    }
+
+    // OnEnable 메서드 추가
+    private void OnEnable()
+    {
+        // 씬 로드 시 UI 참조 다시 찾기
+        if (pauseButton == null)
+        {
+            pauseButton = GameObject.Find("PauseButton")?.GetComponent<Button>();
+            if (pauseButton != null)
+            {
+                SetupButtonListeners();
+            }
         }
     }
 } 
