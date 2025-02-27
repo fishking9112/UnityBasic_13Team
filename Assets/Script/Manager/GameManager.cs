@@ -75,7 +75,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-<<<<<<< HEAD
         // UI 매니저 초기화 - 타입 이름으로 직접 찾기
         var uiManager = FindObjectOfType(System.Type.GetType("InGameUIManager"));
         if (uiManager == null)
@@ -97,9 +96,6 @@ public class GameManager : MonoBehaviour
             }
         }
         player.Init(this);
-=======
-       
->>>>>>> parent of 2d6a1f1 ([Feat] Scene 연결작업)
     }
 
     public void OpenNextDungeon()

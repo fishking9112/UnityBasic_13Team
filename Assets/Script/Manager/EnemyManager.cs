@@ -15,14 +15,11 @@ public class EnemyManager : MonoBehaviour
     public List<EnemyController> activeEnemies = new List<EnemyController>();
 
     private bool enemySpawnComplite;
-<<<<<<< HEAD
 
     #pragma warning disable 0414
     [SerializeField] private float timeBetweenSpawns = 0.2f;
     [SerializeField] private float timeBetweenWaves = 1f;
     #pragma warning restore 0414
-=======
->>>>>>> parent of 2d6a1f1 ([Feat] Scene 연결작업)
 
     private GameManager gameManager;
     private void Awake()

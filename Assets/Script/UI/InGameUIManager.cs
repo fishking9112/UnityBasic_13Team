@@ -103,7 +103,11 @@ public class InGameUIManager : MonoBehaviour
             Debug.Log("Start 메서드에서 일시정지 패널 강제 비활성화");
         }
         
-        // 기존 코드...
+        // 필수 초기화 코드 추가
+        InitializeUI();
+        SetupButtonListeners();
+        RegisterAllEnemies();
+        CheckEventSystem();
     }
 
     private void InitializeUI()
