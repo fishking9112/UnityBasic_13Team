@@ -17,17 +17,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Test_scene/Ver_0.1/Test_1.unity
     guid: f6a5a8c8023b38547b26f634b441dcda
-  - enabled: 1
-    path: Assets/Scenes/Test_scene/Ver_0.1/Test_2.unity
-    guid: 04f6995d908f1bc4d86a8f876d0c34c3
-  - enabled: 1
-    path: Assets/Scenes/Test_scene/Ver_0.1/Test_3.unity
-    guid: 858c6036bd18e694cb4a2d898f04b7ef
-  - enabled: 1
-    path: Assets/Scenes/Test_scene/Ver_0.1/Test_4.unity
-    guid: d5ff54b6c97bdce489efa883ac1e94d8
-  - enabled: 1
-    path: Assets/Scenes/Test_scene/Ver_0.1/Test_Boss.unity
-    guid: c1fe63e6b32bc99479fcadbe055b230d
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 8095ad40c8a18774bb1435b623037ec1, type: 2}
