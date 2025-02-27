@@ -46,6 +46,7 @@ public class EquipmentInventoryManager : MonoBehaviour
     private List<WeaponItem> inventoryItems = new List<WeaponItem>();
     private Dictionary<int, WeaponData> weaponDataDict = new Dictionary<int, WeaponData>();
     private GameDataManager gameDataManager;
+    private StatHandler statHandler;
 
     private void Start()
     {
@@ -54,6 +55,16 @@ public class EquipmentInventoryManager : MonoBehaviour
         if (gameDataManager == null)
         {
             Debug.LogError("GameDataManager를 찾을 수 없습니다.");
+        }
+        
+        // StatHandler 참조 가져오기
+        statHandler = FindObjectOfType<StatHandler>();
+        if (statHandler == null)
+        {
+            Debug.LogWarning("StatHandler를 찾을 수 없습니다. 새로 생성합니다.");
+            GameObject statHandlerObj = new GameObject("StatHandler");
+            statHandler = statHandlerObj.AddComponent<StatHandler>();
+            DontDestroyOnLoad(statHandlerObj);
         }
         
         LoadWeaponData();
@@ -495,6 +506,29 @@ public class EquipmentInventoryManager : MonoBehaviour
             
             // UI 갱신
             GenerateInventoryUI();
+
+            // 장착 상태 변경 후 스탯 다시 계산
+            if (changed)
+            {
+                // 스탯 다시 계산
+                if (statHandler != null)
+                {
+                    Debug.Log("아이템 장착 상태 변경으로 스탯 다시 계산");
+                    statHandler.RefreshStats();
+                    
+                    // TotalStats.json 파일 내용 로그로 확인
+                    string totalStatsPath = Path.Combine(Application.dataPath, "Script/Chart/TotalStats.json");
+                    if (File.Exists(totalStatsPath))
+                    {
+                        string content = File.ReadAllText(totalStatsPath);
+                        Debug.Log($"업데이트된 TotalStats.json: {content}");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("StatHandler가 없어 스탯을 다시 계산할 수 없습니다.");
+                }
+            }
         }
         
         return changed;
