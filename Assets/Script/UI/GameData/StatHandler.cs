@@ -93,6 +93,9 @@ public class StatHandler : MonoBehaviour
     public float CriticalRate => finalCriticalRate;
     public float Speed => finalSpeed;
 
+    // 현재 체력
+    public int nowHealth;
+
     private void Awake()
     {
         // 파일 경로 설정
@@ -334,7 +337,10 @@ public class StatHandler : MonoBehaviour
                 if (item.rating >= 4) finalAttack += item.capability_value / 2;
                 break;
         }
-        
+
+
+        nowHealth = finalHealth;
+
         // 아이템 적용 후 스탯 변화 상세 로그
         Debug.Log($"아이템 '{item.name}' 스탯 적용 상세: " +
                   $"공격력 {prevAttack} → {finalAttack} (+{finalAttack - prevAttack}), " +
@@ -406,6 +412,45 @@ public class StatHandler : MonoBehaviour
     {
         return Random.value <= finalCriticalRate;
     }
+
+    public int CalculateDamaged(int incomingDamage)
+    {
+        // 방어력으로 데미지 감소
+        float damageAfterDefense = incomingDamage - baseDefense;
+
+        // 방어율로 데미지 감소 (퍼센트)
+        float finalDamage = damageAfterDefense * (1 - baseDamageReduction);
+
+        // 최소 1의 데미지는 입음
+        return Mathf.Max(1, Mathf.RoundToInt(finalDamage));
+    }
+
+    public bool ChangeHealth(int damage)
+    {
+        int previousHealth = nowHealth;
+        nowHealth = Mathf.Clamp(nowHealth - damage, 0, finalHealth);
+
+        // 체력이 변경되었을 때만 이벤트 발생
+        if (previousHealth != nowHealth)
+        {
+            // UI에 몬스터 체력 반영할 자리
+        }
+
+        // 체력이 0이 되면 사망 처리
+        if (nowHealth <= 0)
+        {
+            Die();
+            return true;
+        }
+        return false;
+    }
+
+    private void Die()
+    {
+        Debug.Log("몬스터 사망");
+        // 경험치 떨어트리기 등
+    }
+
 
     private void Start()
     {

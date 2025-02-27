@@ -108,6 +108,7 @@ public class InGamePlayerManager : MonoBehaviour
         {
             OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
             Debug.Log($"플레이어 체력 변경: {previousHealth} -> {_currentHealth}");
+            // UI에 플레이어 체력 반영할 자리
         }
 
         // 체력이 0이 되면 사망 처리

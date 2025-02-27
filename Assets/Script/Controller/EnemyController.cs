@@ -146,4 +146,17 @@ public class EnemyController : BaseController
         _rigidbody.velocity = Vector3.zero;
         animationHandler.Move(Vector3.zero);
     }
+
+    public override void TakeDamage(float changed)
+    {
+        base.TakeDamage(changed);
+
+        bool isDead = statHandler.ChangeHealth(statHandler.CalculateDamaged((int)changed));
+
+        if (isDead)
+        {
+            animationHandler.Dead();
+            Destroy(gameObject, 0.5f);
+        }
+    }
 }
