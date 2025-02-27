@@ -20,7 +20,6 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private float timeBetweenWaves = 1f;
 
     private GameManager gameManager;
-
     private void Awake()
     {
         gameManager = transform.parent.GetComponent<GameManager>();

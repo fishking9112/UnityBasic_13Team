@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
 
     private EnemyManager enemyManager;
 
+    public ObjectPooling objectPooling;
+
     public static bool isFirstLoading = true;
 
     private void Awake()
@@ -22,7 +24,8 @@ public class GameManager : MonoBehaviour
 
 
         enemyManager = GetComponentInChildren<EnemyManager>();
-        //enemyManager.Init(this);
+
+        objectPooling = GetComponentInChildren<ObjectPooling>();
     }
 
     private void Start()
