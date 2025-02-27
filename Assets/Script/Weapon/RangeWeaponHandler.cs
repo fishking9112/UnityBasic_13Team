@@ -39,6 +39,7 @@ public class RangeWeaponHandler : WeaponHandler
         base.Start();
         projectileManager = ProjectileManager.Instance;
         specailAbility = 1;
+        Power = Controller.GetPower();
     }
 
     public override void Attack()
