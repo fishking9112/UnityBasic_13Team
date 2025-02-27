@@ -1512,7 +1512,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseStats:
-    maxHealth: 1
+    maxHealth: 100
     attack: 10
     defense: 5
     damageReduction: 0.1

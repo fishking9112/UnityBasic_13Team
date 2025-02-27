@@ -5,14 +5,24 @@ using UnityEngine.InputSystem.Layouts;
 
 public class EnemyManager : MonoBehaviour
 {
+    private Coroutine waveRoutine;
+
+    [SerializeField] private List<GameObject> enemyPrefabs;
+
+    [SerializeField] List<Rect> spawnAreas;
+    [SerializeField] private Color gizmoColor = new Color(1, 0, 0, 0.3f);
+
     public List<EnemyController> activeEnemies = new List<EnemyController>();
 
     private bool enemySpawnComplite;
+<<<<<<< HEAD
 
     #pragma warning disable 0414
     [SerializeField] private float timeBetweenSpawns = 0.2f;
     [SerializeField] private float timeBetweenWaves = 1f;
     #pragma warning restore 0414
+=======
+>>>>>>> parent of 2d6a1f1 ([Feat] Scene 연결작업)
 
     private GameManager gameManager;
     private void Awake()
@@ -20,7 +30,24 @@ public class EnemyManager : MonoBehaviour
         gameManager = transform.parent.GetComponent<GameManager>();
     }
 
-  
+    private void OnDrawGizmosSelected()
+    {
+        if(spawnAreas==null)
+        {
+            return;
+        }
+
+        Gizmos.color = gizmoColor;
+
+        foreach(var area in spawnAreas)
+        {
+            Vector3 center = new Vector3(area.x + area.width / 2, area.y + area.height / 2);
+            Vector3 size = new Vector3(area.width, area.height);
+
+            Gizmos.DrawCube(center, size);
+        }
+    }
+
     public void RemoveEnemyOnDeath(EnemyController enemy)
     {
         activeEnemies.Remove(enemy);
