@@ -1,9 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.InputSystem.InputControlExtensions;
 
 public class BaseController : MonoBehaviour
 {
+    protected enum State
+    {
+        Move,
+        Attack,
+        Idle,
+        Dead
+    }
+
     protected Rigidbody _rigidbody;
 
     protected Vector3 movementDirection = Vector3.zero;
@@ -20,6 +29,8 @@ public class BaseController : MonoBehaviour
 
     protected bool isAttacking;
 
+    protected State enumState;
+
     protected virtual void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -31,18 +42,44 @@ public class BaseController : MonoBehaviour
 
     protected virtual void Start()
     {
-
+        enumState = State.Idle;
     }
 
     protected virtual void Update()
     {
-        HandleAction();
-        Rotate(lookDirection);
+        switch (enumState)
+        {
+            case State.Idle:
+
+                break;
+            case State.Move:
+                Rotate(lookDirection);
+                break;
+            case State.Attack:
+                HandleAction();
+                break;
+            case State.Dead:
+                break;
+        }
     }
 
     protected virtual void FixedUpdate()
     {
-        MoveMent(MovementDirection);
+        switch (enumState)
+        {
+            case State.Idle:
+
+                break;
+            case State.Move:
+                MoveMent(MovementDirection);
+                break;
+            case State.Attack:
+                break;
+            case State.Dead:
+                break;
+
+
+        }
 
     }
     protected virtual void HandleAction()

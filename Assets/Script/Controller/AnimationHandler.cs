@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimationHandler : MonoBehaviour
 {
+    public Action OnAttackEnd;
+
     private static readonly int IsMoving = Animator.StringToHash("IsMoving");
     private static readonly int IsDamage = Animator.StringToHash("IsDamage");
     private static readonly int IsAttack = Animator.StringToHash("IsAttack");
@@ -28,7 +31,10 @@ public class AnimationHandler : MonoBehaviour
     {
         animator.SetBool(IsAttack, Attack);
     }
-
+    public void AttackAniEnd()
+    {
+        OnAttackEnd.Invoke();
+    }
     public void Damage()
     {
         animator.SetBool(IsDamage, true);

@@ -16,16 +16,22 @@ public class GameManager : MonoBehaviour
 
     public static bool isFirstLoading = true;
 
+    public GameObject mapObject;
+
     private void Awake()
     {
         Instance = this;
         player = FindObjectOfType<PlayerController>();
         player.Init(this);
 
-
         enemyManager = GetComponentInChildren<EnemyManager>();
 
         objectPooling = GetComponentInChildren<ObjectPooling>();
+
+        mapObject = GameObject.FindGameObjectWithTag("Map");
+
+        //플레이어 초기 위치 정보 가져오기
+        player.transform.position = mapObject.transform.Find("PlayerSpawn").position;
     }
 
     private void Start()

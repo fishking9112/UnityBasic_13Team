@@ -13333,7 +13333,7 @@ GameObject:
   - component: {fileID: 7406024824747596912}
   m_Layer: 0
   m_Name: TestBossMap
-  m_TagString: Untagged
+  m_TagString: Map
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
