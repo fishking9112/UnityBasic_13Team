@@ -16,9 +16,6 @@ public class EnemyManager : MonoBehaviour
 
     private bool enemySpawnComplite;
 
-    [SerializeField] private float timeBetweenSpawns = 0.2f;
-    [SerializeField] private float timeBetweenWaves = 1f;
-
     private GameManager gameManager;
     private void Awake()
     {
