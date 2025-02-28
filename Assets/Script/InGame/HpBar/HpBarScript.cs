@@ -6,9 +6,10 @@ public class HpBarScript : MonoBehaviour
 {
     private GameObject HpBar;
 
+
     private void Start()
     {
-        HpBar = GameObject.Find("HpBar/HpBarSlider");
+        HpBar = GameObject.Find("UI/Canvas/HpBar/HpBarSlider");
     }
 
     private void Update()
