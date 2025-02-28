@@ -87,6 +87,8 @@ public class GameManager : MonoBehaviour
             
             Debug.Log("OpenNextDungeon !");
 
+            gameSceneManager.LoadNextScene();
+
             GameObject.Find("Portal").transform.Find("Trigger").gameObject.SetActive(true);
 
         }

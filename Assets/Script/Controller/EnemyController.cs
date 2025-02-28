@@ -42,6 +42,10 @@ public class EnemyController : BaseController
 
     protected override void Update()
     {
+        // 일시정지 상태에서는 업데이트 중단
+        if (Time.timeScale <= 0.01f)
+            return;
+        
         base.Update();
 
         switch (enumState)
