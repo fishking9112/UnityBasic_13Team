@@ -56,6 +56,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // 물리 엔진이 timeScale에 영향을 받도록 설정
+        Physics.autoSimulation = true;
+
         // UI 매니저 초기화 - 타입 이름으로 직접 찾기
         var uiManager = FindObjectOfType(System.Type.GetType("InGameUIManager"));
         if (uiManager == null)
