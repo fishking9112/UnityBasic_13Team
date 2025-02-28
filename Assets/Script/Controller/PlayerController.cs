@@ -148,6 +148,13 @@ public class PlayerController : BaseController
     {
         while(true)
         {
+            // 일시정지 상태에서는 대기
+            if (Time.timeScale <= 0.01f)
+            {
+                yield return null;
+                continue;
+            }
+            
             yield return new WaitForSeconds(weaponHandler.Delay);
             yield return new WaitWhile(() => nearestEnemy==null);
             yield return new WaitUntil(() => movementDirection == Vector3.zero);
@@ -197,5 +204,15 @@ public class PlayerController : BaseController
     {
         base.Start();
         SubscribeToPlayerDeath();
+    }
+
+    protected override void Update()
+    {
+        // 일시정지 상태에서는 업데이트 중단
+        if (Time.timeScale <= 0.01f)
+            return;
+        
+        base.Update();
+        // 나머지 코드...
     }
 }

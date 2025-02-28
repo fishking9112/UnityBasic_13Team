@@ -1559,6 +1559,9 @@ MonoBehaviour:
   _debugMode: 0
   _lastActionLog: 
   _testDamageAmount: 10
+  enableCollisionDamage: 1
+  collisionDamage: 50
+  damageInterval: 1
 --- !u!4 &1985602282
 Transform:
   m_ObjectHideFlags: 0

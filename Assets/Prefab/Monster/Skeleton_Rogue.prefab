@@ -146,7 +146,6 @@ GameObject:
   - component: {fileID: 4232800122248076550}
   - component: {fileID: 2130582000264274992}
   - component: {fileID: 3392777904782377678}
-  - component: {fileID: 5897467493674376352}
   - component: {fileID: 5735151357600764512}
   - component: {fileID: 7786086151761450089}
   - component: {fileID: 4525705317967123533}
@@ -211,18 +210,6 @@ MonoBehaviour:
   WeaponPrefab: {fileID: 0}
   enumState: 0
   followRange: 15
---- !u!114 &5897467493674376352
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1377174716797380439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cab7a686b95949a4c9982be561dac042, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5735151357600764512
 MonoBehaviour:
   m_ObjectHideFlags: 0
