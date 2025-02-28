@@ -550,6 +550,91 @@ public class InGamePlayerManager : MonoBehaviour
             Debug.Log($"플레이어가 {enemy.name}과 충돌하여 {damage}의 원본 데미지가 적용됩니다.");
         }
     }
+
+    /// <summary>
+    /// 플레이어의 공격력을 증가시킵니다.
+    /// </summary>
+    /// <param name="amount">증가시킬 공격력 값</param>
+    public void IncreaseAttack(float amount)
+    {
+        // 플레이어 공격력 증가 로직 구현
+        _attack += Mathf.RoundToInt(amount);
+        Debug.Log($"플레이어 공격력 {amount} 증가, 현재 공격력: {_attack}");
+        
+        // 스탯 변경 이벤트 발생
+        OnStatsChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// 플레이어의 방어력을 증가시킵니다.
+    /// </summary>
+    /// <param name="amount">증가시킬 방어력 값</param>
+    public void IncreaseDefense(float amount)
+    {
+        // 플레이어 방어력 증가 로직 구현
+        _defense += Mathf.RoundToInt(amount);
+        Debug.Log($"플레이어 방어력 {amount} 증가, 현재 방어력: {_defense}");
+        
+        // 스탯 변경 이벤트 발생
+        OnStatsChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// 플레이어의 최대 체력을 증가시킵니다.
+    /// </summary>
+    /// <param name="amount">증가시킬 최대 체력 값</param>
+    public void IncreaseMaxHealth(float amount)
+    {
+        // 플레이어 최대 체력 증가 로직 구현
+        int healthIncrease = Mathf.RoundToInt(amount);
+        _maxHealth += healthIncrease;
+        
+        // 현재 체력도 함께 증가
+        _currentHealth += healthIncrease;
+        
+        Debug.Log($"플레이어 최대 체력 {amount} 증가, 현재 최대 체력: {_maxHealth}, 현재 체력: {_currentHealth}");
+        
+        // 체력 변경 이벤트 발생
+        OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
+        
+        // 스탯 변경 이벤트 발생
+        OnStatsChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// 플레이어의 이동 속도를 증가시킵니다.
+    /// </summary>
+    /// <param name="amount">증가시킬 이동 속도 값</param>
+    public void IncreaseMoveSpeed(float amount)
+    {
+        // 플레이어 이동 속도 증가 로직 구현
+        _moveSpeed += amount;
+        Debug.Log($"플레이어 이동 속도 {amount} 증가, 현재 이동 속도: {_moveSpeed}");
+        
+        // 플레이어 컨트롤러에 이동 속도 적용
+        PlayerController playerController = FindObjectOfType<PlayerController>();
+        if (playerController != null)
+        {
+            playerController.UpdateMoveSpeed(_moveSpeed);
+        }
+        
+        // 스탯 변경 이벤트 발생
+        OnStatsChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// 플레이어의 크리티컬 확률을 증가시킵니다.
+    /// </summary>
+    /// <param name="amount">증가시킬 크리티컬 확률 값 (0.0 ~ 1.0)</param>
+    public void IncreaseCriticalChance(float amount)
+    {
+        // 플레이어 크리티컬 확률 증가 로직 구현
+        _criticalRate += amount;
+        Debug.Log($"플레이어 크리티컬 확률 {amount * 100}% 증가, 현재 크리티컬 확률: {_criticalRate * 100}%");
+        
+        // 스탯 변경 이벤트 발생
+        OnStatsChanged?.Invoke();
+    }
 }
 
 /// <summary>

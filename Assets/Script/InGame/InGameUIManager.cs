@@ -40,6 +40,11 @@ public class InGameUIManager : MonoBehaviour
     [SerializeField] private Text goldText;
     [SerializeField] private Button pauseButton;
     [SerializeField] private Button resumeButton;
+    
+    [Header("슬롯 머신 UI")]
+    [SerializeField] private GameObject slotMachinePanel; // 슬롯 머신 패널
+    [SerializeField] private SlotMachineMgr slotMachineMgr; // 슬롯 머신 매니저 참조
+    [SerializeField] private AudioClip levelUpSound; // 레벨업 사운드
 
     [Header("플레이어 데이터")]
     [SerializeField] private int currentExp;
@@ -55,6 +60,7 @@ public class InGameUIManager : MonoBehaviour
 
     // 게임 일시정지 상태
     private bool isPaused = false;
+    private bool isSlotMachinePaused = false; // 슬롯 머신으로 인한 일시정지 상태
 
     private InGamePlayerManager playerManager;
 
@@ -90,6 +96,20 @@ public class InGameUIManager : MonoBehaviour
         {
             Debug.LogError("InGameUIManager: pausePanel이 Inspector에서 할당되지 않았습니다!");
         }
+        
+        if (slotMachinePanel == null)
+        {
+            Debug.LogWarning("InGameUIManager: slotMachinePanel이 Inspector에서 할당되지 않았습니다!");
+        }
+        
+        if (slotMachineMgr == null)
+        {
+            slotMachineMgr = FindObjectOfType<SlotMachineMgr>();
+            if (slotMachineMgr == null)
+            {
+                Debug.LogWarning("InGameUIManager: SlotMachineMgr를 찾을 수 없습니다!");
+            }
+        }
 
         // 플레이어 매니저 참조 가져오기
         playerManager = InGamePlayerManager.Instance;
@@ -101,6 +121,9 @@ public class InGameUIManager : MonoBehaviour
         {
             Debug.LogError("InGameUIManager: 플레이어 매니저 참조 실패");
         }
+        
+        // 버튼 리스너 설정
+        SetupButtonListeners();
     }
 
     // 씬 전환 시 데이터 로드
@@ -145,27 +168,17 @@ public class InGameUIManager : MonoBehaviour
 
     private void Start()
     {
-        // 기존 코드...
-        
-        // 게임 시간 강제 정상화
-        Time.timeScale = 1f;
-        Debug.Log($"Start 메서드에서 Time.timeScale 강제 설정: {Time.timeScale}");
-        
-        // 일시정지 상태 초기화
-        isPaused = false;
-        
-        // 일시정지 패널 강제 비활성화
-        if (pausePanel != null)
-        {
-            pausePanel.SetActive(false);
-            Debug.Log("Start 메서드에서 일시정지 패널 강제 비활성화");
-        }
-        
         // 필수 초기화 코드 추가
         InitializeUI();
+        
+        // 버튼 리스너 설정 (Awake에서도 호출하지만 안전을 위해 중복 호출)
         SetupButtonListeners();
+        
         RegisterAllEnemies();
         CheckEventSystem();
+        
+        // 디버그 로그 추가
+        Debug.Log("InGameUIManager Start 완료");
     }
 
     private void InitializeUI()
@@ -194,101 +207,84 @@ public class InGameUIManager : MonoBehaviour
         {
             pausePanel.SetActive(false);
         }
+        
+        // 슬롯 머신 패널 초기 상태 설정
+        if (slotMachinePanel != null)
+        {
+            slotMachinePanel.SetActive(false);
+        }
     }
 
+    // 버튼 리스너 설정 메서드 개선
     private void SetupButtonListeners()
     {
-        // 일시정지 버튼 설정
+        // 일시정지 버튼 리스너 설정
         if (pauseButton != null)
         {
-            // 기존 리스너 제거 후 다시 추가 (중요!)
+            // 기존 리스너 제거 후 새로 추가 (중복 방지)
             pauseButton.onClick.RemoveAllListeners();
-            
-            // 디버그 로그 추가
-            Debug.Log("일시정지 버튼 리스너 설정 - 기존 리스너 제거됨");
-            
             pauseButton.onClick.AddListener(TogglePause);
-            
-            // 버튼이 상호작용 가능한지 확인
-            if (!pauseButton.interactable)
-            {
-                pauseButton.interactable = true;
-                Debug.Log("일시정지 버튼 interactable 속성을 true로 설정했습니다.");
-            }
-            
-            Debug.Log("일시정지 버튼 이벤트 연결 완료");
+            Debug.Log("일시정지 버튼 리스너 설정 완료");
         }
         else
         {
-            Debug.LogError("일시정지 버튼 참조가 없습니다! Inspector에서 할당해주세요.");
+            Debug.LogError("일시정지 버튼 참조가 없습니다!");
+            // 버튼 참조 찾기 시도
+            pauseButton = GameObject.Find("PauseButton")?.GetComponent<Button>();
+            if (pauseButton != null)
+            {
+                pauseButton.onClick.RemoveAllListeners();
+                pauseButton.onClick.AddListener(TogglePause);
+                Debug.Log("일시정지 버튼 참조 찾기 및 리스너 설정 완료");
+            }
         }
         
-        // 게임 재개 버튼 설정
+        // 게임 재개 버튼 리스너 설정
         if (resumeButton != null)
         {
             resumeButton.onClick.RemoveAllListeners();
             resumeButton.onClick.AddListener(ResumeGame);
-            Debug.Log("게임 재개 버튼 이벤트 연결 완료");
-        }
-        else
-        {
-            Debug.LogWarning("게임 재개 버튼 참조가 없습니다. 일시정지 패널 내에 'ResumeButton'을 추가하세요.");
+            Debug.Log("게임 재개 버튼 리스너 설정 완료");
         }
     }
 
     private void CheckEventSystem()
     {
         // EventSystem 확인
-        if (FindObjectOfType<UnityEngine.EventSystems.EventSystem>() == null)
+        if (UnityEngine.EventSystems.EventSystem.current == null)
         {
-            Debug.LogError("씬에 EventSystem이 없습니다! UI 이벤트가 작동하지 않을 수 있습니다.");
-            
-            // EventSystem 자동 생성 (선택사항)
-            GameObject eventSystem = new GameObject("EventSystem");
-            eventSystem.AddComponent<UnityEngine.EventSystems.EventSystem>();
-            eventSystem.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
-            Debug.Log("EventSystem을 자동으로 생성했습니다.");
+            Debug.LogError("EventSystem이 씬에 없습니다!");
         }
     }
 
-    /// <summary>
-    /// 일시정지 토글
-    /// </summary>
+    // 일시정지 토글 메서드 개선
     public void TogglePause()
     {
-        // 같은 프레임에서 중복 호출 방지
-        if (Time.frameCount == lastToggleFrame)
+        // 슬롯 머신으로 인한 일시정지 상태에서는 무시
+        if (isSlotMachinePaused)
         {
-            Debug.Log("TogglePause 중복 호출 방지");
+            Debug.Log("슬롯 머신 패널이 활성화된 상태에서는 일시정지를 토글할 수 없습니다.");
             return;
         }
         
-        lastToggleFrame = Time.frameCount;
+        isPaused = !isPaused;
+        IsGamePaused = isPaused; // 정적 변수 업데이트
         
-        try
+        // 일시정지 패널 토글
+        if (pausePanel != null)
         {
-            Debug.Log("TogglePause 메서드 호출됨");
-            
-            isPaused = !isPaused;
-            IsGamePaused = isPaused; // 정적 변수 업데이트
-            
-            if (pausePanel != null)
-            {
-                pausePanel.SetActive(isPaused);
-                Debug.Log($"일시정지 패널 상태: {(isPaused ? "활성화" : "비활성화")}");
-            }
-            else
-            {
-                Debug.LogError("일시정지 패널 참조가 없습니다!");
-            }
-            
-            // 게임 시간 조절
-            Time.timeScale = isPaused ? 0f : 1f;
-            Debug.Log($"Time.timeScale 설정: {Time.timeScale}");
+            pausePanel.SetActive(isPaused);
         }
-        catch (System.Exception e)
+        
+        // 타임스케일 설정
+        Time.timeScale = isPaused ? 0f : 1f;
+        
+        Debug.Log($"게임 일시정지 상태 변경: {isPaused}, Time.timeScale: {Time.timeScale}");
+        
+        // 디버그용 로그 추가
+        if (pausePanel != null)
         {
-            Debug.LogError($"TogglePause 메서드 실행 중 오류 발생: {e.Message}");
+            Debug.Log($"일시정지 패널 활성화 상태: {pausePanel.activeSelf}");
         }
     }
 
@@ -299,20 +295,19 @@ public class InGameUIManager : MonoBehaviour
     {
         currentExp += amount;
         
-        // 레벨업 체크
-        while (currentExp >= maxExp)
-        {
-            currentExp -= maxExp;
-            LevelUp();
-        }
-        
-        // UI 업데이트
+        // 경험치 바 업데이트
         if (expBar != null)
         {
             expBar.value = currentExp;
         }
         
         Debug.Log($"경험치 획득: +{amount}, 현재 경험치: {currentExp}/{maxExp}");
+        
+        // 레벨업 체크
+        if (currentExp >= maxExp)
+        {
+            LevelUp();
+        }
         
         // 데이터 저장
         SavePersistentData();
@@ -328,10 +323,15 @@ public class InGameUIManager : MonoBehaviour
         // 다음 레벨 경험치 요구량 증가 (레벨당 20% 증가)
         maxExp = Mathf.RoundToInt(maxExp * 1.2f);
         
-        // 경험치 바 최대값 업데이트
+        // 경험치 초과분 이월
+        currentExp = currentExp - maxExp;
+        if (currentExp < 0) currentExp = 0;
+        
+        // 경험치 바 업데이트
         if (expBar != null)
         {
             expBar.maxValue = maxExp;
+            expBar.value = currentExp;
         }
         
         // 레벨 텍스트 업데이트
@@ -340,12 +340,169 @@ public class InGameUIManager : MonoBehaviour
             levelText.text = $"Lv {playerLevel}";
         }
         
-        Debug.Log($"레벨 업! 현재 레벨: {playerLevel}, 다음 레벨까지 필요 경험치: {maxExp}");
+        Debug.Log($"레벨 업! 현재 레벨: {playerLevel}, 다음 레벨 경험치: {currentExp}/{maxExp}");
         
         // 데이터 저장
         SavePersistentData();
         
+        // 레벨업 사운드 재생
+        if (levelUpSound != null)
+        {
+            AudioSource audioSource = GetComponent<AudioSource>();
+            if (audioSource != null)
+            {
+                audioSource.PlayOneShot(levelUpSound);
+            }
+        }
+        
+        // 슬롯 머신 패널 표시 및 게임 일시정지
+        ShowSlotMachinePanel();
+        
         // 여기에 레벨업 보상 로직 추가 (스탯 증가 등)
+    }
+    
+    /// <summary>
+    /// 슬롯 머신 패널을 표시하고 게임을 일시정지합니다.
+    /// </summary>
+    private void ShowSlotMachinePanel()
+    {
+        if (slotMachinePanel != null)
+        {
+            // 슬롯 머신 패널 활성화
+            slotMachinePanel.SetActive(true);
+            
+            // 슬롯 머신 초기화
+            if (slotMachineMgr != null)
+            {
+                slotMachineMgr.InitializeSlotMachine();
+            }
+            
+            // 레벨업 사운드 재생
+            if (levelUpSound != null)
+            {
+                AudioSource audioSource = GetComponent<AudioSource>();
+                if (audioSource != null)
+                {
+                    audioSource.PlayOneShot(levelUpSound);
+                }
+            }
+            
+            // 게임 일시정지
+            isSlotMachinePaused = true;
+            Time.timeScale = 0f;
+            
+            Debug.Log("슬롯 머신 패널 표시 및 게임 일시정지");
+        }
+    }
+    
+    /// <summary>
+    /// 슬롯 머신 패널을 닫고 게임을 재개합니다.
+    /// </summary>
+    public void CloseSlotMachinePanel()
+    {
+        if (slotMachinePanel != null)
+        {
+            // 슬롯 머신 패널 비활성화
+            slotMachinePanel.SetActive(false);
+            
+            // 게임 재개
+            isSlotMachinePaused = false;
+            
+            // 일시정지 상태가 아니면 게임 시간 정상화
+            if (!isPaused)
+            {
+                Time.timeScale = 1f;
+            }
+            
+            Debug.Log("슬롯 머신 패널 닫기 및 게임 재개");
+        }
+    }
+    
+    /// <summary>
+    /// 선택한 스킬을 적용합니다.
+    /// </summary>
+    /// <param name="skillIndex">선택한 스킬의 인덱스</param>
+    public void ApplySelectedSkill(int skillIndex)
+    {
+        Debug.Log($"선택한 스킬 적용: {skillIndex}");
+        
+        string statName = "";
+        string statValue = "";
+        
+        switch (skillIndex)
+        {
+            case 0: // 공격력 증가
+                if (playerManager != null)
+                {
+                    playerManager.IncreaseAttack(5);
+                    statName = "공격력";
+                    statValue = "+5";
+                    Debug.Log("공격력 +5 증가");
+                }
+                break;
+            case 1: // 방어력 증가
+                if (playerManager != null)
+                {
+                    playerManager.IncreaseDefense(3);
+                    statName = "방어력";
+                    statValue = "+3";
+                    Debug.Log("방어력 +3 증가");
+                }
+                break;
+            case 2: // 최대 체력 증가
+                if (playerManager != null)
+                {
+                    playerManager.IncreaseMaxHealth(20);
+                    statName = "최대 체력";
+                    statValue = "+20";
+                    Debug.Log("최대 체력 +20 증가");
+                }
+                break;
+            case 3: // 이동 속도 증가
+                if (playerManager != null)
+                {
+                    playerManager.IncreaseMoveSpeed(0.2f);
+                    statName = "이동 속도";
+                    statValue = "+0.2";
+                    Debug.Log("이동 속도 +0.2 증가");
+                }
+                break;
+            case 4: // 크리티컬 확률 증가
+                if (playerManager != null)
+                {
+                    playerManager.IncreaseCriticalChance(0.05f);
+                    statName = "크리티컬 확률";
+                    statValue = "+5%";
+                    Debug.Log("크리티컬 확률 +5% 증가");
+                }
+                break;
+            default:
+                Debug.LogWarning($"알 수 없는 스킬 인덱스: {skillIndex}");
+                break;
+        }
+        
+        // 능력치 증가 알림 표시 (선택 사항)
+        ShowStatIncreaseNotification(statName, statValue);
+        
+        // 슬롯 머신 패널 닫기
+        CloseSlotMachinePanel();
+    }
+
+    /// <summary>
+    /// 능력치 증가 알림을 표시합니다.
+    /// </summary>
+    private void ShowStatIncreaseNotification(string statName, string statValue)
+    {
+        if (string.IsNullOrEmpty(statName) || string.IsNullOrEmpty(statValue))
+            return;
+        
+        // 여기에 알림 UI를 표시하는 코드를 추가할 수 있습니다.
+        // 예: 화면 상단에 잠시 표시되는 텍스트 등
+        
+        Debug.Log($"{statName} {statValue} 증가!");
+        
+        // 예시: 간단한 코루틴으로 임시 텍스트 표시
+        // StartCoroutine(ShowTemporaryText($"{statName} {statValue} 증가!"));
     }
 
     /// <summary>
@@ -382,6 +539,18 @@ public class InGameUIManager : MonoBehaviour
         AddGold(150);
     }
 
+    // 모든 적 등록 메서드 - 중복 정의된 메서드를 하나로 통합
+    private void RegisterAllEnemies()
+    {
+        EnemyController[] enemies = FindObjectsOfType<EnemyController>();
+        Debug.Log($"InGameUIManager: {enemies.Length}개의 적 발견, 이벤트 구독 시작");
+        
+        foreach (var enemy in enemies)
+        {
+            RegisterEnemy(enemy);
+        }
+    }
+
     /// <summary>
     /// 새로운 몬스터 등록 (동적으로 생성된 몬스터용)
     /// </summary>
@@ -396,14 +565,13 @@ public class InGameUIManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 게임 재개 (일시정지 패널의 계속하기 버튼용)
-    /// </summary>
+    // 게임 재개 메서드 개선
     public void ResumeGame()
     {
         if (isPaused)
         {
             TogglePause();
+            Debug.Log("게임 재개 버튼으로 게임 재개");
         }
     }
 
@@ -422,23 +590,25 @@ public class InGameUIManager : MonoBehaviour
         #endif
     }
 
-    // 모든 적 등록 메서드 추가
-    private void RegisterAllEnemies()
-    {
-        EnemyController[] enemies = FindObjectsOfType<EnemyController>();
-        Debug.Log($"InGameUIManager: {enemies.Length}개의 적 발견, 이벤트 구독 시작");
-        
-        foreach (var enemy in enemies)
-        {
-            RegisterEnemy(enemy);
-        }
-    }
-
     // 디버그용 메서드 추가
     [ContextMenu("일시정지 토글 테스트")]
     private void TestTogglePause()
     {
         TogglePause();
+    }
+    
+    // 디버그용 메서드 추가
+    [ContextMenu("레벨업 테스트")]
+    private void TestLevelUp()
+    {
+        LevelUp();
+    }
+    
+    // 디버그용 메서드 추가
+    [ContextMenu("슬롯 머신 테스트")]
+    private void TestSlotMachine()
+    {
+        ShowSlotMachinePanel();
     }
 
     // Update 메서드 수정
@@ -460,6 +630,12 @@ public class InGameUIManager : MonoBehaviour
         
         // 이미 일시정지 토글 중이면 추가 입력 무시
         if (Time.frameCount == lastToggleFrame)
+        {
+            return;
+        }
+        
+        // 슬롯 머신 패널이 활성화된 상태에서는 ESC 키로 일시정지 토글 무시
+        if (isSlotMachinePaused)
         {
             return;
         }
@@ -497,9 +673,10 @@ public class InGameUIManager : MonoBehaviour
             pauseButton = GameObject.Find("PauseButton")?.GetComponent<Button>();
             if (pauseButton != null)
             {
-                // 여기서 SetupButtonListeners 호출 제거
-                // 대신 버튼이 null이 아닌지만 확인
-                Debug.Log("OnEnable에서 일시정지 버튼 참조 찾음");
+                // 버튼 리스너 설정
+                pauseButton.onClick.RemoveAllListeners();
+                pauseButton.onClick.AddListener(TogglePause);
+                Debug.Log("OnEnable에서 일시정지 버튼 참조 찾음 및 리스너 설정 완료");
             }
         }
     }

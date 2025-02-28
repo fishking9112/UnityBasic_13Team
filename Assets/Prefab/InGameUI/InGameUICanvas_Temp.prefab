@@ -481,6 +481,9 @@ MonoBehaviour:
   goldText: {fileID: 2606647860922474549}
   pauseButton: {fileID: 5328742449773935654}
   resumeButton: {fileID: 5725464019835399699}
+  slotMachinePanel: {fileID: 8759191075541817370}
+  slotMachineMgr: {fileID: 1491258027903065408}
+  levelUpSound: {fileID: 0}
   currentExp: 0
   maxExp: 100
   playerLevel: 1
@@ -2233,19 +2236,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5429037017990769268}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2211614932153720505}
-        m_TargetAssemblyTypeName: InGameUIManager, Assembly-CSharp
-        m_MethodName: TogglePause
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1001 &3673836245828095756
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2587,8 +2578,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e130ca58dac2834786da3d8860813e3, type: 3}
+--- !u!114 &1491258027903065408 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2760167672201433676, guid: 3e130ca58dac2834786da3d8860813e3, type: 3}
+  m_PrefabInstance: {fileID: 3673836245828095756}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759191075541817370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ece1e1a05334fc49a8488a0cdaca578, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4813959071215631024 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8084674763191645628, guid: 3e130ca58dac2834786da3d8860813e3, type: 3}
+  m_PrefabInstance: {fileID: 3673836245828095756}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8759191075541817370 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5436675404611507990, guid: 3e130ca58dac2834786da3d8860813e3, type: 3}
   m_PrefabInstance: {fileID: 3673836245828095756}
   m_PrefabAsset: {fileID: 0}

@@ -17,6 +17,9 @@ public class PlayerController : BaseController
     public bool isBattle;
 
     public AudioClip attackSoundClip;
+    
+    // 이동 속도 변수 추가
+    [SerializeField] private float moveSpeed = 5f;
 
     private InGamePlayerManager playerManager;
     public void Init(GameManager gameManager)
@@ -213,6 +216,23 @@ public class PlayerController : BaseController
             return;
         
         base.Update();
-        // 나머지 코드...
+        
+        // 이동 속도 적용 로직 추가
+        if (enumState == State.Move)
+        {
+            _rigidbody.velocity = movementDirection * moveSpeed;
+            animationHandler.Move(movementDirection * moveSpeed);
+        }
+    }
+
+    /// <summary>
+    /// 플레이어의 이동 속도를 업데이트합니다.
+    /// </summary>
+    /// <param name="newMoveSpeed">새로운 이동 속도</param>
+    public void UpdateMoveSpeed(float newMoveSpeed)
+    {
+        // 이동 속도 업데이트 로직
+        moveSpeed = newMoveSpeed;
+        Debug.Log($"플레이어 이동 속도 업데이트: {moveSpeed}");
     }
 }
