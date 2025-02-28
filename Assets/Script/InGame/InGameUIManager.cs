@@ -531,8 +531,8 @@ public class InGameUIManager : MonoBehaviour
     {
         Debug.Log($"InGameUIManager: {enemy.name} 처치 보상 처리 시작");
         
-        // 경험치 보상 (50%~80% 랜덤)
-        int expReward = Mathf.RoundToInt(maxExp * Random.Range(0.5f, 0.8f));
+        // 경험치 보상 (20%로 고정)
+        int expReward = Mathf.RoundToInt(maxExp * 0.2f);
         AddExperience(expReward);
         
         // 골드 보상 (고정 150골드)

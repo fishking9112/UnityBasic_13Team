@@ -64,7 +64,7 @@ public class InGamePlayerManager : MonoBehaviour
 
     [Header("충돌 데미지 설정")]
     [SerializeField] private bool enableCollisionDamage = true;
-    [SerializeField] private int collisionDamage = 50;
+    [SerializeField] private int collisionDamage = 500;
     [SerializeField] private float damageInterval = 0.1f; // 연속 데미지 방지를 위한 간격
     [SerializeField] private bool ignoreDefenseForCollision = true; // 충돌 데미지에 방어력 무시 옵션
     private float lastDamageTime = 0f;
@@ -75,6 +75,11 @@ public class InGamePlayerManager : MonoBehaviour
     // 씬 로드 감지를 위한 변수 추가
     private string currentSceneName;
     private bool needsPlayerReconnect = false;
+
+    [Header("사망 설정")]
+    [SerializeField] private float deathDelay = 2.0f; // 사망 후 씬 전환까지의 지연 시간
+    [SerializeField] private string mainSceneName = "Main_scene"; // 메인 씬 이름
+    private bool isDead = false; // 사망 상태 플래그
 
     private void Awake()
     {
@@ -280,7 +285,7 @@ public class InGamePlayerManager : MonoBehaviour
         // 체력이 0이 되면 사망 처리
         if (_currentHealth <= 0)
         {
-            Die();
+            HandlePlayerDeath();
         }
     }
 
@@ -315,6 +320,12 @@ public class InGamePlayerManager : MonoBehaviour
     /// </summary>
     public bool TakeDamage(int amount)
     {
+        // 이미 사망한 상태면 무시
+        if (_currentHealth <= 0 || isDead)
+        {
+            return false;
+        }
+        
         // 원본 데미지 저장 (디버그용)
         int originalAmount = amount;
         
@@ -353,11 +364,31 @@ public class InGamePlayerManager : MonoBehaviour
     /// <summary>
     /// 플레이어 사망 처리
     /// </summary>
-    private void Die()
+    private void HandlePlayerDeath()
     {
-        Debug.Log("플레이어 사망");
-        // 여기에 사망 관련 로직 추가
-        // 예: 게임 오버 UI 표시, 애니메이션 재생 등
+        if (isDead) return; // 이미 사망 처리 중이면 무시
+        
+        isDead = true;
+        Debug.Log("플레이어 사망 - 메인 씬으로 즉시 이동");
+        
+        // 아주 짧은 딜레이 후 씬 전환 (선택 사항)
+        StartCoroutine(QuickReturnToMainScene());
+    }
+
+    /// <summary>
+    /// 아주 짧은 딜레이 후 메인 씬으로 이동하는 코루틴
+    /// </summary>
+    private IEnumerator QuickReturnToMainScene()
+    {
+        // 매우 짧은 딜레이 (0.1초)
+        yield return new WaitForSeconds(0.1f);
+        
+        // 게임 시간 정상화 (일시정지 상태일 수 있으므로)
+        Time.timeScale = 1.0f;
+        
+        // 메인 씬으로 이동
+        Debug.Log($"메인 씬({mainSceneName})으로 이동합니다.");
+        SceneManager.LoadScene(mainSceneName);
     }
 
     /// <summary>
@@ -494,25 +525,18 @@ public class InGamePlayerManager : MonoBehaviour
             return;
         }
         
-        // 기존 충돌 핸들러 제거 (중복 방지)
-        PlayerCollisionHandler existingHandler = playerController.GetComponent<PlayerCollisionHandler>();
-        if (existingHandler != null)
-        {
-            existingHandler.OnEnemyCollision -= HandleEnemyCollision;
-            Debug.Log("기존 충돌 핸들러에서 이벤트 구독 해제");
-        }
-        
-        // 플레이어에 충돌 감지 컴포넌트가 없으면 추가
-        PlayerCollisionHandler collisionHandler = playerController.GetComponent<PlayerCollisionHandler>();
+        // 플레이어 게임 오브젝트에 충돌 핸들러 추가
+        PlayerCollisionHandler collisionHandler = playerController.gameObject.GetComponent<PlayerCollisionHandler>();
         if (collisionHandler == null)
         {
             collisionHandler = playerController.gameObject.AddComponent<PlayerCollisionHandler>();
-            Debug.Log("플레이어에 충돌 감지 컴포넌트 추가됨");
         }
         
         // 충돌 이벤트 구독
+        collisionHandler.OnEnemyCollision -= HandleEnemyCollision;
         collisionHandler.OnEnemyCollision += HandleEnemyCollision;
-        Debug.Log("플레이어 충돌 이벤트 구독 완료");
+        
+        Debug.Log("플레이어 충돌 감지 설정 완료");
     }
     
     /// <summary>
@@ -520,35 +544,47 @@ public class InGamePlayerManager : MonoBehaviour
     /// </summary>
     private void HandleEnemyCollision(EnemyController enemy)
     {
-        if (!enableCollisionDamage || Time.time - lastDamageTime < damageInterval)
+        // 충돌 데미지가 비활성화되어 있으면 무시
+        if (!enableCollisionDamage)
+        {
             return;
-            
+        }
+        
+        // 연속 데미지 방지를 위한 시간 체크
+        if (Time.time - lastDamageTime < damageInterval)
+        {
+            return;
+        }
+        
+        // 데미지 계산 및 적용
+        int damage = collisionDamage;
+        if (!ignoreDefenseForCollision)
+        {
+            // 방어력을 고려한 데미지 계산
+            damage = CalculateDamageWithDefense(damage);
+        }
+        
+        // 데미지 적용
+        TakeDamage(damage);
         lastDamageTime = Time.time;
         
-        // 데미지 계산 (기본 충돌 데미지 + 적 레벨에 따른 추가 데미지)
-        int damage = collisionDamage;
+        // 디버그 로그
+        if (_debugMode)
+        {
+            _lastActionLog = $"적 {enemy.name}과 충돌: {damage} 데미지";
+            Debug.Log(_lastActionLog);
+        }
+    }
+
+    // 방어력을 고려한 데미지 계산
+    private int CalculateDamageWithDefense(int rawDamage)
+    {
+        // 방어력에 따른 데미지 감소 계산
+        float damageReduction = _defense * 0.05f; // 방어력 1당 5%의 데미지 감소
+        damageReduction = Mathf.Clamp(damageReduction, 0f, 0.7f); // 최대 70%까지 감소
         
-        // 적 레벨이나 강함에 따라 데미지 조정 (옵션)
-        EnemyStatsHandler enemyStats = enemy.GetComponent<EnemyStatsHandler>();
-        if (enemyStats != null)
-        {
-            // 적 레벨이나 공격력에 따라 데미지 조정 가능
-            // damage += enemyStats.GetAttackPower() / 2;
-        }
-        
-        // 방어력 무시 옵션 사용
-        if (ignoreDefenseForCollision)
-        {
-            // 방어력 무시하고 직접 체력 감소
-            ChangeHealth(-damage);
-            Debug.Log($"플레이어가 {enemy.name}과 충돌하여 방어력 무시 {damage}의 데미지를 입었습니다.");
-        }
-        else
-        {
-            // 일반 데미지 처리 (방어력 적용)
-            TakeDamage(damage);
-            Debug.Log($"플레이어가 {enemy.name}과 충돌하여 {damage}의 원본 데미지가 적용됩니다.");
-        }
+        int reducedDamage = Mathf.RoundToInt(rawDamage * (1f - damageReduction));
+        return Mathf.Max(1, reducedDamage); // 최소 1 데미지 보장
     }
 
     /// <summary>
