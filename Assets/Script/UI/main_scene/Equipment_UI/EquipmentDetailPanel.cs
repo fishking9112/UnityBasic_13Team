@@ -107,7 +107,7 @@ public class EquipmentDetailPanel : MonoBehaviour
                 
                 Debug.Log($"장착 상태 변경 성공: 아이템 ID {currentItemId}, 인덱스 {currentItemIndex}, 새 상태 {(isEquipped ? "장착" : "미장착")}");
                 
-                // 인벤토리 UI 강제 새로고침
+                // 인벤토리 UI 강제 새로고침 - 이 부분이 이벤트를 발생시킴
                 inventoryManager.RefreshInventory();
             }
             else
