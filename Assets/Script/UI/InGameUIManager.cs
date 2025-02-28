@@ -8,6 +8,14 @@ public class InGameUIManager : MonoBehaviour
 {
     // 싱글톤 인스턴스
     private static InGameUIManager _instance;
+    
+    // 씬 전환 시 유지할 정적 데이터
+    private static int s_playerLevel = 1;
+    private static int s_currentExp = 0;
+    private static int s_maxExp = 100;
+    private static int s_gold = 0;
+    private static bool s_isInitialized = false;
+    
     public static InGameUIManager Instance
     {
         get
@@ -68,6 +76,9 @@ public class InGameUIManager : MonoBehaviour
         }
         
         _instance = this;
+        
+        // 씬 전환 시 데이터 로드
+        LoadPersistentData();
 
         // UI 컴포넌트 참조 확인
         if (pauseButton == null)
@@ -90,6 +101,46 @@ public class InGameUIManager : MonoBehaviour
         {
             Debug.LogError("InGameUIManager: 플레이어 매니저 참조 실패");
         }
+    }
+
+    // 씬 전환 시 데이터 로드
+    private void LoadPersistentData()
+    {
+        if (s_isInitialized)
+        {
+            // 이미 초기화된 데이터가 있으면 로드
+            playerLevel = s_playerLevel;
+            currentExp = s_currentExp;
+            maxExp = s_maxExp;
+            gold = s_gold;
+            Debug.Log($"이전 씬의 데이터 로드: 레벨 {playerLevel}, 경험치 {currentExp}/{maxExp}, 골드 {gold}");
+        }
+        else
+        {
+            // 첫 실행 시 초기값 설정
+            s_isInitialized = true;
+            s_playerLevel = playerLevel;
+            s_currentExp = currentExp;
+            s_maxExp = maxExp;
+            s_gold = gold;
+            Debug.Log("InGameUIManager 데이터 초기화");
+        }
+    }
+
+    // 씬 전환 전 데이터 저장
+    private void SavePersistentData()
+    {
+        s_playerLevel = playerLevel;
+        s_currentExp = currentExp;
+        s_maxExp = maxExp;
+        s_gold = gold;
+        Debug.Log($"데이터 저장: 레벨 {playerLevel}, 경험치 {currentExp}/{maxExp}, 골드 {gold}");
+    }
+
+    private void OnDestroy()
+    {
+        // 씬 전환 시 데이터 저장
+        SavePersistentData();
     }
 
     private void Start()
@@ -262,6 +313,9 @@ public class InGameUIManager : MonoBehaviour
         }
         
         Debug.Log($"경험치 획득: +{amount}, 현재 경험치: {currentExp}/{maxExp}");
+        
+        // 데이터 저장
+        SavePersistentData();
     }
 
     /// <summary>
@@ -288,6 +342,9 @@ public class InGameUIManager : MonoBehaviour
         
         Debug.Log($"레벨 업! 현재 레벨: {playerLevel}, 다음 레벨까지 필요 경험치: {maxExp}");
         
+        // 데이터 저장
+        SavePersistentData();
+        
         // 여기에 레벨업 보상 로직 추가 (스탯 증가 등)
     }
 
@@ -305,6 +362,9 @@ public class InGameUIManager : MonoBehaviour
         }
         
         Debug.Log($"골드 획득: +{amount}, 현재 골드: {gold}");
+        
+        // 데이터 저장
+        SavePersistentData();
     }
 
     /// <summary>
