@@ -1623,6 +1623,10 @@ MonoBehaviour:
   _debugMode: 0
   _lastActionLog: 
   _testDamageAmount: 10
+  enableCollisionDamage: 1
+  collisionDamage: 50
+  damageInterval: 0.1
+  ignoreDefenseForCollision: 1
 --- !u!4 &1985602282
 Transform:
   m_ObjectHideFlags: 0
@@ -1684,6 +1688,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefabs:
   - {fileID: 1360514249974498181, guid: d90dd255c6a11f046ae96d0cded15153, type: 3}
+  - {fileID: 4222303175212969929, guid: 626ff242169f96f4bbd86440ca0932b8, type: 3}
+  - {fileID: 1377174716797380439, guid: 7b91f91f9d5958d47903b3232f50e38d, type: 3}
   spawnAreas: []
   gizmoColor: {r: 1, g: 0, b: 0, a: 0.3}
   activeEnemies: []
