@@ -48,6 +48,10 @@ public class EquipmentInventoryManager : MonoBehaviour
     private GameDataManager gameDataManager;
     private StatHandler statHandler;
 
+    // 인벤토리 변경 이벤트 추가
+    public delegate void InventoryChangedHandler();
+    public event InventoryChangedHandler OnInventoryChanged;
+
     private void Start()
     {
         // GameDataManager 참조 가져오기
@@ -528,6 +532,9 @@ public class EquipmentInventoryManager : MonoBehaviour
                 {
                     Debug.LogError("StatHandler가 없어 스탯을 다시 계산할 수 없습니다.");
                 }
+                
+                // 인벤토리 변경 이벤트 발생
+                OnInventoryChanged?.Invoke();
             }
         }
         
@@ -542,6 +549,9 @@ public class EquipmentInventoryManager : MonoBehaviour
         
         // UI만 다시 생성
         GenerateInventoryUI();
+        
+        // 인벤토리 변경 이벤트 발생
+        OnInventoryChanged?.Invoke();
         
         Debug.Log("인벤토리 데이터 및 UI가 새로고침되었습니다.");
     }
