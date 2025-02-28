@@ -1342,6 +1342,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestMap_2
       objectReference: {fileID: 0}
+    - target: {fileID: 5187894913159474593, guid: 68f87279133171941a27a7c5f96d425f, type: 3}
+      propertyPath: enemyPrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5187894913159474593, guid: 68f87279133171941a27a7c5f96d425f, type: 3}
+      propertyPath: enemyPrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 1360514249974498181, guid: d90dd255c6a11f046ae96d0cded15153, type: 3}
     - target: {fileID: 8069907996890506962, guid: 68f87279133171941a27a7c5f96d425f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

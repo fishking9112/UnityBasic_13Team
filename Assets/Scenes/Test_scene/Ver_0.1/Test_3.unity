@@ -906,6 +906,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestMap_3
       objectReference: {fileID: 0}
+    - target: {fileID: 3486295283186536095, guid: 516b30cfcd21f9241976983f524cc1f2, type: 3}
+      propertyPath: enemyPrefabs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3486295283186536095, guid: 516b30cfcd21f9241976983f524cc1f2, type: 3}
+      propertyPath: enemyPrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 1377174716797380439, guid: 7b91f91f9d5958d47903b3232f50e38d, type: 3}
+    - target: {fileID: 3486295283186536095, guid: 516b30cfcd21f9241976983f524cc1f2, type: 3}
+      propertyPath: enemyPrefabs.Array.data[2]
+      value: 
+      objectReference: {fileID: 1360514249974498181, guid: d90dd255c6a11f046ae96d0cded15153, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
