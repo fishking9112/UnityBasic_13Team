@@ -54,8 +54,12 @@ Object Pooling 구현
 주요 기능 및 트러블 슈팅
 
 1. 주변 적 찾기
-  -
-3. 벽에 튕기는 화살
-  -
+
+![Image](https://github.com/user-attachments/assets/7f952f8f-3ccb-4d31-bd54-5a84b6b5b112)
+
+2. 벽에 튕기는 화살
+
+![Image](https://github.com/user-attachments/assets/48b794ed-3f98-4bd4-a789-218a96b557ad)
+
 5. 3D -> 2D 방향벡터
   -
